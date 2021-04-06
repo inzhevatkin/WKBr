@@ -1,3 +1,4 @@
+import numpy as np
 from math import sin, cos, exp
 from BoundaryLines import BoundaryLines
 from optical_len import optical_len
@@ -14,6 +15,20 @@ def find_arg(k, radius, m, l1, l2):
 # Function for finding the attenuation of the electric field of the transmitted wave:
 def find_attenuation(k, l2, mi, cos_t):
     return exp(- k * mi * l2 * cos_t)
+
+
+# Function for finding the "convergence factor" due to the curvature.
+# See details: Graeme L. James "Geometrical Theory of Diffraction for Electromagnetic Waves" (1986).
+# l - optical path in the particle
+def find_convergence_factor(radius, m, l, inc_angle, trav_angle):
+    C = np.array([[1/radius, 0], [0, 1/radius]])  # surface curvature matrix
+    # Qi = np.array([[0, 0], [0, 0]])  # incident front curvature matrix
+    Ki = np.array([[1, 0], [0, -cos(inc_angle)]])  # matrix transverse coordinates
+    RevKt = np.array([[1, 0], [0, -1/cos(trav_angle)]])
+    Gi = C*cos(inc_angle)  # + Ki*Qi*Ki
+    Gt = Gi/m
+    Qt = RevKt*(Gt-C*cos(trav_angle))*RevKt
+    return 0
 
 
 # A plane wave is incident along the z axis.
@@ -223,6 +238,16 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             elif cur_region == "no_root":
                 exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, e = 0, 0, 0, 0, 0, 0, 0
                 num_no_roots += 1
+            elif type == "wkb+refraction11":
+                # Everything is the same as in WKBr v.2, but here we account for "convergence factor".
+                arg = find_arg(k, radius, N1, l1, l2)
+                attenuation1 = find_attenuation(k, l2, K1, cos_t1)
+                exr_new = cos(arg) * attenuation1
+                exi_new = sin(arg) * attenuation1
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
+                    apply_rotation_electric_field_vector(exr_new, exi_new, da1)
+                e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
+                num_one_root += 1
             else:
                 print("Error in find_wkb_ef() function, in elif type == wkb+refraction6")
         else:
