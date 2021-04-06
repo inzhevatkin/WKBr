@@ -17,10 +17,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
     rotation_angle = find_rotation_angle_in_mp(x2_lab, y2_lab)
 
     # For WKBr:
-    if type_ == "wkb+refraction" or type_ == "wkb+refraction2" or type_ == "wkb+refraction3" or \
-            type_ == "wkb+refraction4" or type_ == "wkb+refraction5" or type_ == "wkb+refraction6" \
-            or type_ == "wkb+refraction7" or type_ == "wkb+refraction8" or type_ == "wkb+refraction9"\
-            or type_ == "wkb+refraction10":
+    if type_ != "analytic" or type_ != "discrete":
         try:
             # Defined output parameters.
             info = "not_success"
@@ -41,7 +38,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
                     elif cur_region == "no_root":
                         info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, "no_root")
                     else:
-                        print("Error in optical_len() function! In if type_ == wkb+refraction.")
+                        print("Error in optical_len() function! In the first option.")
                 elif type_ == "wkb+refraction2" or type_ == "wkb+refraction7":
                     # The second option: in the 1,2 solution region, we find one root and two roots respectively.
                     # In the 0 solution we use WKB.
@@ -121,7 +118,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
             N1, K1, N2, K2 = 0, 0, 0, 0
         else:
             print("Error in optical_len() function! Unknown parameter info. ")
-
+    # For WKB:
     if type_ == "analytic" or type_ == "discrete":
         l1 = (z_ + radius)
         l2 = (z2_lab - z_)
