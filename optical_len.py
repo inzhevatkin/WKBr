@@ -71,7 +71,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
             else:
                 print("Error in optical_len() function! In if solution == iterative")
         except RuntimeError as error:
-            print("Oops!", sys.exc_info()[0], "occured.")
+            print("Oops! An error has occurred.")
             print(error)
             print("y2, z2 - ", y2, z2)
             info = "not_success"
@@ -84,8 +84,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
                 l2_2 = 0
                 # Nr, Ni = find_adjusted_refractive_indices(m, mi, y1 / radius)
                 t_per1, t_par1 = transmission_coefficient(y1, radius, m, mi, k)
-                t_per2 = 0
-                t_par2 = 0
+                t_per2, t_par2 = 0, 0
                 x1_lab, y1_lab, z1_lab = coordinates_in_lab_plane(y1, z1, rotation_angle, radius)
                 da1 = delta_angle(x1_lab, radius, m)
                 da2 = 0
@@ -115,22 +114,13 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
         elif info == "not_success":
             type_ = "analytic"
         elif info == "no_calculation":
-            # Данный код выполняется если мы не хотим ничего считать и зануляем электрическое поле.
-            l1 = 0
-            l2 = 0
-            l1_2 = 0
-            l2_2 = 0
-            t_per1 = 0
-            t_per2 = 0
-            t_par1 = 0
-            t_par2 = 0
-            da1 = 0
-            da2 = 0
-            cos_t1 = 0
-            cos_t2 = 0
+            # This code is executed if we do not want to calculate anything and zero the electric field.
+            l1, l2, l1_2, l2_2 = 0, 0, 0, 0
+            t_per1, t_per2, t_par1, t_par2 = 0, 0, 0, 0
+            da1, da2, cos_t1, cos_t2 = 0, 0, 0, 0
             N1, K1, N2, K2 = 0, 0, 0, 0
         else:
-            print("Error in optical_len() function!")
+            print("Error in optical_len() function! Unknown parameter info. ")
 
     if type_ == "analytic" or type_ == "discrete":
         l1 = (z_ + radius)
@@ -138,10 +128,9 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
         l1_2 = 0
         l2_2 = 0
         cur_region = "one_root"
-        # в случае WKB нет преломления, поэтому вместо y1 использую y2.
+        # In the case of WKB, there is no refraction, so instead of y1 use y2.
         t_per1, t_par1 = transmission_coefficient(y2, radius, m, mi, k)
-        t_per2 = t_per1
-        t_par2 = t_par1
+        t_per2, t_par2 = t_per1, t_par1
         x1_lab, y1_lab, z1_lab = coordinates_in_lab_plane(y2, z2, rotation_angle, radius)
         da1 = delta_angle(x1_lab, radius, m)
         da2 = da1
