@@ -1,6 +1,6 @@
+from math import sin, cos, exp
 from BoundaryLines import BoundaryLines
 from optical_len import optical_len
-from math import sin, cos, exp
 from Coordinate_systems import apply_rotation_electric_field_vector, sum_ef, apply_transmission_coefficient
 
 
@@ -17,6 +17,7 @@ def find_attenuation(k, l2, mi, cos_t):
 
 
 # A plane wave is incident along the z axis.
+# The wave is linearly polarized along the x axis.
 def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analytic", find_grid=False,
                 solution_method="iterative"):
     # Separate regions using rays:
@@ -67,18 +68,17 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         # The usual sphere equation is used here. 0 coordinate system at the center of the sphere.
         z_ = - (radius ** 2 - x_cur ** 2 - y_cur ** 2) ** 0.5
         l1, l2, l1_2, l2_2, type2, cur_region, t_per1, t_per2, t_par1, t_par2, da1, da2, rotation_angle, \
-        cos_t1, cos_t2, N1, K1, N2, K2 \
-            = optical_len(x_cur,
-                          y_cur,
-                          z_cur,
-                          z_,
-                          m,
-                          mi,
-                          radius,
-                          type,
-                          lines,
-                          k,
-                          solution=solution_method)
+        cos_t1, cos_t2, N1, K1, N2, K2 = optical_len(x_cur,
+                                                      y_cur,
+                                                      z_cur,
+                                                      z_,
+                                                      m,
+                                                      mi,
+                                                      radius,
+                                                      type,
+                                                      lines,
+                                                      k,
+                                                      solution=solution_method)
 
         if type2 == "discrete" or \
                 (type2 == "analytic" and
@@ -92,10 +92,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             attenuation1 = find_attenuation(k, l2, K1, cos_t1)
             exr_new = cos(arg) * attenuation1
             exi_new = sin(arg) * attenuation1
-            eyr_new = 0
-            eyi_new = 0
-            ezr_new = 0
-            ezi_new = 0
+            eyr_new, eyi_new, ezr_new, ezi_new = 0, 0, 0, 0
             e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
             num_one_root += 1
         elif type == "wkb+refraction6":
