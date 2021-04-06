@@ -36,7 +36,7 @@ def cos_refracted_angle_mp(y1, R, m):
     return cos_
 
 
-# Function for rotating the electric field vector.
+# Function for rotating the electric field vector due to the curvature of the particle surface.
 def apply_rotation_electric_field_vector(exr, exi, da):
     exr_new = exr * cos(da)
     exi_new = exi * cos(da)
