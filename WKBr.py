@@ -94,20 +94,17 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         elif type == "wkb+refraction6":
             # WKBr version 2.
             # Here I also rotate the electric field.
-            if cur_region == "one_root" or cur_region == "two_roots" or cur_region == "no_root":
-                arg = find_arg(k, radius, N1, l1, l2)
-                attenuation1 = find_attenuation(k, l2, K1, cos_t1)
-                exr_new = cos(arg) * attenuation1
-                exi_new = sin(arg) * attenuation1
-                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
-                    apply_rotation_electric_field_vector(exr_new, exi_new, da1)
-                e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
-                num_one_root += 1
-            else:
-                print("Error in find_wkb_ef() function, in elif type == wkb+refraction6")
+            arg = find_arg(k, radius, N1, l1, l2)
+            attenuation1 = find_attenuation(k, l2, K1, cos_t1)
+            exr_new = cos(arg) * attenuation1
+            exi_new = sin(arg) * attenuation1
+            exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
+                apply_rotation_electric_field_vector(exr_new, exi_new, da1)
+            e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
+            num_one_root += 1
         elif type == "wkb+refraction7":
             # WKBr version 3.
-            if cur_region == "one_root" or cur_region == "no_root":
+            if cur_region == "one_root" or "no_root":
                 arg = find_arg(k, radius, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
                 exr_new = cos(arg) * attenuation1
@@ -164,13 +161,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 e = (exr_new ** 2 + exi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 num_two_roots += 1
             elif cur_region == "no_root":
-                exr_new = 0
-                exi_new = 0
-                eyr_new = 0
-                eyi_new = 0
-                ezr_new = 0
-                ezi_new = 0
-                e = 0
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, e = 0, 0, 0, 0, 0, 0, 0
                 num_no_roots += 1
             else:
                 print("Error in find_wkb_ef() function, in elif type == wkb+refraction8")
@@ -210,13 +201,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 num_two_roots += 1
             elif cur_region == "no_root":
-                exr_new = 0
-                exi_new = 0
-                eyr_new = 0
-                eyi_new = 0
-                ezr_new = 0
-                ezi_new = 0
-                e = 0
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, e = 0, 0, 0, 0, 0, 0, 0
                 num_no_roots += 1
             else:
                 print("Error in find_wkb_ef() function, in elif type == wkb+refraction9")
@@ -236,13 +221,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 num_one_root += 1
             elif cur_region == "no_root":
-                exr_new = 0
-                exi_new = 0
-                eyr_new = 0
-                eyi_new = 0
-                ezr_new = 0
-                ezi_new = 0
-                e = 0
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, e = 0, 0, 0, 0, 0, 0, 0
                 num_no_roots += 1
             else:
                 print("Error in find_wkb_ef() function, in elif type == wkb+refraction6")
