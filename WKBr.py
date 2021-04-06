@@ -228,7 +228,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 print("Error in find_wkb_ef() function, in elif type == wkb+refraction9")
         elif type == "wkb+refraction10":
             # WKBr version 6.
-            # Всё то же что в WKBr version 2, но добавляем зануление эл. поля в области R0.
+            # Everything is the same as in WKBr v. 2, but we zero the electric field in the R0 region.
             if cur_region == "one_root" or cur_region == "two_roots":
                 arg = find_arg(k, radius, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
