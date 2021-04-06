@@ -22,19 +22,18 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
             or type_ == "wkb+refraction7" or type_ == "wkb+refraction8" or type_ == "wkb+refraction9"\
             or type_ == "wkb+refraction10":
         try:
-            # Определили выходные параметры.
+            # Defined output parameters.
             info = "not_success"
             y1 = 0
             z1 = 0
             y1_2 = 0
             z1_2 = 0
-            # Используем итеративный алгоритм:
+            # We use an iterative algorithm:
             if solution == "iterative":
                 if type_ == "wkb+refraction" or type_ == "wkb+refraction4" or type_ == "wkb+refraction5" \
                         or type_ == "wkb+refraction6":
-                    # Используем область с одним решением.
-                    # Первый вариант: в области 1, 2-х решений находим только один корень.
-                    # В области 0 решений используем WKB.
+                    # The first option: in the 1,2 solution region, we find only one root.
+                    # In the 0 solution we use WKB.
                     cur_region = region(y2, z2, radius, m, lines)
                     if cur_region == "one_root" or cur_region == "two_roots":
                         cur_region = "one_root"
@@ -44,15 +43,13 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
                     else:
                         print("Error in optical_len() function! In if type_ == wkb+refraction.")
                 elif type_ == "wkb+refraction2" or type_ == "wkb+refraction7":
-                    # Используем область с одним и с двумя решениями.
-                    # Второй вариант: в области 1, 2-х решений находим 1, 2 корня соответственно.
-                    # В области 0 решений используем WKB.
+                    # The second option: in the 1,2 solution region, we find one root and two roots respectively.
+                    # In the 0 solution we use WKB.
                     cur_region = region(y2, z2, radius, m, lines)
                     info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, cur_region)
-                elif type_ == "wkb+refraction3":
-                    # Используем область с одним и без решений.
-                    # Третий вариант: в области 1, 2-х решений находим только один корень.
-                    # В области 0 решений зануляем поле.
+                elif type_ == "wkb+refraction3" or type_ == "wkb+refraction10":
+                    # The 3-rd option: in the 1,2 solution region, we find only one root.
+                    # In the 0 solution we zero electric field.
                     cur_region = region(y2, z2, radius, m, lines)
                     if cur_region == "one_root" or cur_region == "two_roots":
                         cur_region = "one_root"
@@ -60,26 +57,15 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
                     elif cur_region == "no_root":
                         info = "no_calculation"
                     else:
-                        print("Error in optical_len() function! In if type_ == wkb+refraction3.")
+                        print("Error in optical_len() function! In the 3-rd option.")
                 elif type_ == "wkb+refraction8" or type_ == "wkb+refraction9":
-                    # Используем область с одним и с двумя решениями.
-                    # в области 1, 2-х решений находим 1, 2 корня соответственно.
-                    # В области 0 решений зануляем поле.
+                    # The 4-th option: in the 1,2 solution region, we find one root and two roots respectively.
+                    # In the 0 solution we zero electric field.
                     cur_region = region(y2, z2, radius, m, lines)
                     if cur_region == "one_root" or cur_region == "two_roots":
                         info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, cur_region)
                     elif cur_region == "no_root":
                         info = "no_calculation"
-                elif type_ == "wkb+refraction10":
-                    # в области 1, 2-х решений находим 1 корень.
-                    # В области 0 решений зануляем поле.
-                    cur_region = region(y2, z2, radius, m, lines)
-                    if cur_region == "one_root" or cur_region == "two_roots":
-                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, "one_root")
-                    elif cur_region == "no_root":
-                        info = "no_calculation"
-                    else:
-                        print("Error in optical_len() function! In if type_ == wkb+refraction10.")
                 else:
                     print("Error in optical_len() function! No such type. ")
             else:
