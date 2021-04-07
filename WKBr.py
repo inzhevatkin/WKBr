@@ -111,9 +111,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                                                       k,
                                                       solution=solution_method)
 
-        if type2 == "discrete" or "wkb+refraction" or \
-            (type2 == "analytic" and type != "wkb+refraction6" and "wkb+refraction7" and "wkb+refraction8"
-             and "wkb+refraction9"):
+        if type == "analytic" or "discrete" or "wkb+refraction":
             # WKBr version 1.
             arg = find_arg(k, radius, N1, l1, l2)
             attenuation1 = find_attenuation(k, l2, K1, cos_t1)
