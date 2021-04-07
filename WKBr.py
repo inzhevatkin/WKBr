@@ -17,18 +17,33 @@ def find_attenuation(k, l2, mi, cos_t):
     return exp(- k * mi * l2 * cos_t)
 
 
+def safe_div(x, y):
+    if abs(y) < 1e-16:
+        return 0
+    return x / y
+
+
 # Function for finding the "convergence factor" due to the curvature.
 # See details: Graeme L. James "Geometrical Theory of Diffraction for Electromagnetic Waves" (1986).
 # l - optical path in the particle
 def find_convergence_factor(radius, m, l, inc_angle, trav_angle):
     C = np.array([[1/radius, 0], [0, 1/radius]])  # surface curvature matrix
     # Qi = np.array([[0, 0], [0, 0]])  # incident front curvature matrix
-    Ki = np.array([[1, 0], [0, -cos(inc_angle)]])  # matrix transverse coordinates
-    RevKt = np.array([[1, 0], [0, -1/cos(trav_angle)]])
+    # Ki = np.array([[1, 0], [0, -cos(inc_angle)]])  # matrix transverse coordinates
+    RevKt = np.array([[1, 0], [0, -1 / cos(trav_angle)]])
     Gi = C*cos(inc_angle)  # + Ki*Qi*Ki
-    Gt = Gi/m
-    Qt = RevKt*(Gt-C*cos(trav_angle))*RevKt
-    return 0
+    Gt = Gi / m
+    Qt = RevKt.dot(Gt - C * cos(trav_angle)).dot(RevKt)
+    Q11 = Qt[0][0]
+    Q22 = Qt[1][1]
+    Q12 = Qt[0][1]
+    den1 = Q11 + Q22 + ((Q11 - Q22) ** 2 + 4 * Q12 ** 2) ** 0.5
+    den2 = Q11 + Q22 - ((Q11 - Q22) ** 2 + 4 * Q12 ** 2) ** 0.5
+    ro1 = safe_div(2, den1)
+    ro2 = safe_div(2, den2)
+    K = safe_div(ro1 * ro2, (ro1 + l) * (ro2 + l))
+    K = K ** 0.5
+    return K
 
 
 # A plane wave is incident along the z axis.
