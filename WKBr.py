@@ -19,6 +19,7 @@ def find_attenuation(k, l2, mi, cos_t):
 
 def safe_div(x, y):
     if abs(y) < 1e-16:
+        print("Error: division by zero")
         return 0
     return x / y
 
@@ -26,14 +27,14 @@ def safe_div(x, y):
 # Function for finding the "convergence factor" due to the curvature.
 # See details: Graeme L. James "Geometrical Theory of Diffraction for Electromagnetic Waves" (1986).
 # l - optical path in the particle
-def find_convergence_factor(radius, m, l, inc_angle, trav_angle):
+def find_convergence_factor(radius, m, l, inc_angle, refracted_angle):
     C = np.array([[1/radius, 0], [0, 1/radius]])  # surface curvature matrix
     # Qi = np.array([[0, 0], [0, 0]])  # incident front curvature matrix
     # Ki = np.array([[1, 0], [0, -cos(inc_angle)]])  # matrix transverse coordinates
-    RevKt = np.array([[1, 0], [0, -1 / cos(trav_angle)]])
+    RevKt = np.array([[1, 0], [0, -1 / cos(refracted_angle)]])
     Gi = C*cos(inc_angle)  # + Ki*Qi*Ki
     Gt = Gi / m
-    Qt = RevKt.dot(Gt - C * cos(trav_angle)).dot(RevKt)
+    Qt = RevKt.dot(Gt - C * cos(refracted_angle)).dot(RevKt)
     Q11 = Qt[0][0]
     Q22 = Qt[1][1]
     Q12 = Qt[0][1]
