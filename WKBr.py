@@ -265,6 +265,12 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             ref_ang = acos(cos_t1)
             inc_ang = asin(m * sin(ref_ang))
             K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+            exr_new *= K
+            exi_new *= K
+            eyr_new *= K
+            eyi_new *= K
+            ezr_new *= K
+            ezi_new *= K
             e *= K
             num_one_root += 1
         else:
