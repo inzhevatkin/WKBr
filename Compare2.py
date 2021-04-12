@@ -4,7 +4,9 @@ from math import isclose
 from math import isnan
 # from Rounding import rounding2
 import linecache
-from wkb_ef import region, coordinates_in_meridional_plane
+from BoundaryLines import region
+from Coordinate_systems import  coordinates_in_meridional_plane
+
 
 def rounding2(x, y, z, n):
     par = 10 ** n
