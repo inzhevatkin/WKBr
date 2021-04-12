@@ -273,6 +273,27 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             ezi_new *= K
             e *= K
             num_one_root += 1
+        elif type == "wkb+refraction12":
+            # Everything is the same as in WKBr v.2, but here we account for "convergence factor", Fresnel coefficient.
+            arg = find_arg(k, radius, N1, l1, l2)
+            attenuation1 = find_attenuation(k, l2, K1, cos_t1)
+            exr_new = cos(arg) * attenuation1
+            exi_new = sin(arg) * attenuation1
+            exr_new, exi_new, eyr_new, eyi_new = \
+                apply_transmission_coefficient(exr_new, exi_new, t_per1, t_par1, rotation_angle)
+            exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
+                apply_rotation_electric_field_vector(exr_new, exi_new, da1)
+            e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
+            ref_ang = acos(cos_t1)
+            inc_ang = asin(m * sin(ref_ang))
+            K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+            exr_new *= K
+            exi_new *= K
+            eyr_new *= K
+            eyi_new *= K
+            ezr_new *= K
+            ezi_new *= K
+            e *= K
         else:
             print("Error in find_wkb_ef() function!")
 
