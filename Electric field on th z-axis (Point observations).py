@@ -3,7 +3,7 @@ from Compare2 import point_field, return_coordinates, scattnlay_bhfield_to_adda
 if __name__ == "__main__":
     my_abs_tol = 0.01
     size = 200
-    radius = size/2
+    radius = size / 2
     grid = 320
     xp = 0
     yp = 0.31348
@@ -21,7 +21,7 @@ if __name__ == "__main__":
             path_to_file = path_to_file2
         else:
             path_to_file = path_to_dir + type + "-" + str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
-        x, y, z = return_coordinates(path_to_file, type)
+        x, y, z = return_coordinates(path_to_file, type="adda")
         flag = True
         prev = 0
         for zp in z:
