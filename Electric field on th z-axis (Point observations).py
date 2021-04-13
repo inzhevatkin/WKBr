@@ -10,7 +10,6 @@ if __name__ == "__main__":
     m = 1.145
     path_main = "C:/Users/konstantin/Documents/main-script/"
     path_to_dir = path_main + "data size " + str(size) + ", grid " + str(grid) + ", section/"
-    path_write = path_to_dir
 
     for type in ["wkbr", "wkb", "bhfield"]:  # "wkbr"
         print("Current type: ", type)
@@ -31,12 +30,11 @@ if __name__ == "__main__":
             print("Current z: ", zp)
             if flag:
                 flag = False
-                path_write += type + '-field-x' + str(xp) + '-y' + str(yp) + '.dat'
-                f2 = open(path_write, 'w')
+                f2 = open(path_to_dir + type + '-field-x' + str(xp) + '-y' + str(yp) + '.dat', 'w')
                 f2.write('x y z m |E_av| exr_av exi_av eyr_av eyi_av ezr_av ezi_av dots_number \n')
                 point_field(path_to_file, f2, xp, yp, zp, my_abs_tol, m)
             elif flag is False:
                 point_field(path_to_file, f2, xp, yp, zp, my_abs_tol, m)
             else:
-                print("Error! flag is not defined.")
+                print("Error! Flag is not defined.")
             prev = cur
