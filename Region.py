@@ -40,7 +40,7 @@ def region(y2, z2, R, m, lines):
 
 
 def in_square(y, z, R):
-    if 0 <= y <= R and 0 <= z <= R:
+    if 0 <= y <= R and -R <= z <= 0:
         return True
     else:
         return False
