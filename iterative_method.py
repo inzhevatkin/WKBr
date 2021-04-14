@@ -15,7 +15,7 @@ def func(y2, z2, R, m, init_approx):
     g = sin * (tmp1 - cos) / (sin ** 2 + cos * tmp1)
 
     while count < 200:
-        # По оценке правой функции (g) нахожу новый синус (sin_new):
+        # According to the estimate of the right function (g) find a new sine (sin_new):
         tmp2 = y2 + (z2 - R) * g
         tmp3 = (1 + g ** 2)
         sin_new = (tmp2 + g * (tmp3 * R ** 2 - tmp2 ** 2) ** 0.5) / (tmp3 * R)
