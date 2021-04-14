@@ -6,7 +6,7 @@ if __name__ == "__main__":
     radius = size / 2
     grid = 320
     xp = 0
-    yp = 0.31348
+    yp = 26.646
     m = 1.145
     path_main = "C:/Users/konstantin/Documents/main-script/"
     path_to_dir = path_main + "data size " + str(size) + ", grid " + str(grid) + ", section/"

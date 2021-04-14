@@ -1,6 +1,6 @@
 import numpy as np
 from math import sin, cos, exp, acos, asin
-from BoundaryLines import BoundaryLines
+from Region import BoundaryLines
 from optical_len import optical_len
 from Coordinate_systems import apply_rotation_electric_field_vector, sum_ef, apply_transmission_coefficient
 

@@ -1,4 +1,4 @@
-
+tolerance = 1e-8
 
 # Exact solution using iterative method.
 # The function returns the coordinates of the input point (y1, z1) and root_flag = True (if point is found).
@@ -25,7 +25,7 @@ def func(y2, z2, R, m, init_approx):
         # Нахожу чему при данном синусе (sin_new) равна функция слева:
         fnew = (R * sin_new - y2) / (z2 + R * (cos_new - 1))
         d = abs(fnew - g_new)
-        if d < 1e-8:
+        if d < tolerance:
             y1 = sin_new * R
             root_flag = True
             break
@@ -67,7 +67,7 @@ def func2(y2, z2, R, m, init_approx):
         tmp1 = (m ** 2 - sin_new ** 2) ** 0.5
         f2 = sin_new * (tmp1 - cos_new) / (sin_new ** 2 + cos_new * tmp1)
         d = abs(f2 - f_new)
-        if d < 1e-8:
+        if d < tolerance:
             y1 = sin_new * R
             root_flag = True
             break

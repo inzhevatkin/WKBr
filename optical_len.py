@@ -1,5 +1,5 @@
 from iterative_method import iterative_method
-from BoundaryLines import region
+from Region import region
 from Fresnel_coefficients import transmission_coefficient, effective_refractive_indices
 from Coordinate_systems import coordinates_in_meridional_plane, find_rotation_angle_in_mp, coordinates_in_lab_plane, \
     delta_angle, cos_refracted_angle_mp
