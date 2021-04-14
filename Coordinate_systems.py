@@ -4,7 +4,7 @@ from math import atan2, sin, cos, asin
 # Function for finding the coordinates of a point in the meridian plane.
 # M.p. - this is the plane formed by the entry point and the z-axis.
 def coordinates_in_meridional_plane(x_lab, y_lab, z_lab, R):
-    return (x_lab ** 2 + y_lab ** 2) ** 0.5, z_lab + R
+    return (x_lab ** 2 + y_lab ** 2) ** 0.5, z_lab
 
 
 # Function to find the angle of rotation between the meridian plane and the laboratory coordinate system.

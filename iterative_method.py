@@ -1,5 +1,6 @@
 tolerance = 1e-8
 
+
 # Exact solution using iterative method.
 # The function returns the coordinates of the input point (y1, z1) and root_flag = True (if point is found).
 def func(y2, z2, R, m, init_approx):
@@ -33,7 +34,7 @@ def func(y2, z2, R, m, init_approx):
         g = g_new
 
     if root_flag and y2 <= y1 < R:
-        z1 = - (R ** 2 - y1 ** 2) ** 0.5 + R
+        z1 = - (R ** 2 - y1 ** 2) ** 0.5
         if z2 < z1 <= R:
             root_flag = False
     else:
@@ -75,7 +76,7 @@ def func2(y2, z2, R, m, init_approx):
         f = f_new
 
     if root_flag and y2 <= y1 < R:
-        z1 = - (R ** 2 - y1 ** 2) ** 0.5 + R
+        z1 = - (R ** 2 - y1 ** 2) ** 0.5
         if z2 < z1 <= R:
             root_flag = False
     else:
