@@ -3,7 +3,7 @@ from math import atan2, sin, cos, asin
 
 # Function for finding the coordinates of a point in the meridian plane.
 # M.p. - this is the plane formed by the entry point and the z-axis.
-def coordinates_in_meridional_plane(x_lab, y_lab, z_lab, R):
+def coordinates_in_meridional_plane(x_lab, y_lab, z_lab):
     return (x_lab ** 2 + y_lab ** 2) ** 0.5, z_lab
 
 
@@ -15,23 +15,23 @@ def find_rotation_angle_in_mp(x_lab, y_lab):
 
 
 # Function for finding point coordinates in lab.c.s.
-def coordinates_in_lab_plane(y_mp, z_mp, rotation_angle, radius):
+def coordinates_in_lab_plane(y_mp, z_mp, rotation_angle):
     x_lab = y_mp * cos(rotation_angle)
     y_lab = y_mp * sin(rotation_angle)
-    z_lab = z_mp - radius
+    z_lab = z_mp
     return x_lab, y_lab, z_lab
 
 
 # Function for finding the angle i-t in lab.c.s. in section xz:
-def delta_angle(x1, R, m):
-    i = asin(x1 / R)
-    t = asin(x1 / (R * m))
+def delta_angle(x1, m):
+    i = asin(x1)
+    t = asin(x1 / m)
     return i - t
 
 
 # Function for finding the cosine of the angle of passage inside the sphere in the meridian plane:
-def cos_refracted_angle_mp(y1, R, m):
-    sin_ = y1 / (R * m)
+def cos_refracted_angle_mp(y1, m):
+    sin_ = y1 / m
     cos_ = (1 - sin_ ** 2) ** 0.5
     return cos_
 

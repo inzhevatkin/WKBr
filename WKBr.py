@@ -110,7 +110,6 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                                                       z_,
                                                       m,
                                                       mi,
-                                                      1,
                                                       type,
                                                       lines,
                                                       k,

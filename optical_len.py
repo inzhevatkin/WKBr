@@ -10,9 +10,9 @@ from Coordinate_systems import coordinates_in_meridional_plane, find_rotation_an
 # z_ - the coordinate of the ray entrance into the sphere (WKB).
 # type_ - "wkb+refraction", "analytic", "discrete".
 # solution - "polynom", "approximate", "iterative".
-def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solution="iterative"):
+def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="iterative"):
     # Go to the meridian plane:
-    y2, z2 = coordinates_in_meridional_plane(x2_lab, y2_lab, z2_lab, radius)
+    y2, z2 = coordinates_in_meridional_plane(x2_lab, y2_lab, z2_lab)
     # Find rotation angle:
     rotation_angle = find_rotation_angle_in_mp(x2_lab, y2_lab)
 
@@ -32,26 +32,26 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
                             type_ == "wkb+refraction11" or type_ == "wkb+refraction12":
                     # The first option: in the 1,2 solution region, we find only one root.
                     # In the 0 solution we use WKB.
-                    cur_region = region(y2, z2, radius, m, lines)
+                    cur_region = region(y2, z2, m, lines)
                     if cur_region == "one_root" or cur_region == "two_roots":
                         cur_region = "one_root"
-                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, "one_root")
+                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, "one_root")
                     elif cur_region == "no_root":
-                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, "no_root")
+                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, "no_root")
                     else:
                         print("Error in optical_len() function! In the first option.")
                 elif type_ == "wkb+refraction2" or type_ == "wkb+refraction7":
                     # The second option: in the 1,2 solution region, we find one root and two roots respectively.
                     # In the 0 solution we use WKB.
-                    cur_region = region(y2, z2, radius, m, lines)
-                    info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, cur_region)
+                    cur_region = region(y2, z2, m, lines)
+                    info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, cur_region)
                 elif type_ == "wkb+refraction3" or type_ == "wkb+refraction10":
                     # The 3-rd option: in the 1,2 solution region, we find only one root.
                     # In the 0 solution we zero electric field.
-                    cur_region = region(y2, z2, radius, m, lines)
+                    cur_region = region(y2, z2, m, lines)
                     if cur_region == "one_root" or cur_region == "two_roots":
                         cur_region = "one_root"
-                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, "one_root")
+                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, "one_root")
                     elif cur_region == "no_root":
                         info = "no_calculation"
                     else:
@@ -59,9 +59,9 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
                 elif type_ == "wkb+refraction8" or type_ == "wkb+refraction9":
                     # The 4-th option: in the 1,2 solution region, we find one root and two roots respectively.
                     # In the 0 solution we zero electric field.
-                    cur_region = region(y2, z2, radius, m, lines)
+                    cur_region = region(y2, z2, m, lines)
                     if cur_region == "one_root" or cur_region == "two_roots":
-                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, radius, m, cur_region)
+                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, cur_region)
                     elif cur_region == "no_root":
                         info = "no_calculation"
                 else:
@@ -81,12 +81,12 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
                 l1_2 = 0
                 l2_2 = 0
                 # Nr, Ni = find_adjusted_refractive_indices(m, mi, y1 / radius)
-                t_per1, t_par1 = transmission_coefficient(y1, radius, m, mi, k)
+                t_per1, t_par1 = transmission_coefficient(y1, m, mi, k)
                 t_per2, t_par2 = 0, 0
-                x1_lab, y1_lab, z1_lab = coordinates_in_lab_plane(y1, z1, rotation_angle, radius)
-                da1 = delta_angle(x1_lab, radius, m)
+                x1_lab, y1_lab, z1_lab = coordinates_in_lab_plane(y1, z1, rotation_angle)
+                da1 = delta_angle(x1_lab, m)
                 da2 = 0
-                cos_t1 = cos_refracted_angle_mp(y1, radius, m)
+                cos_t1 = cos_refracted_angle_mp(y1, m)
                 cos_t2 = 0
                 N1, K1 = effective_refractive_indices(m, mi, cos_t1)
                 N2, K2 = 0, 0
@@ -97,14 +97,14 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
                 l2_2 = ((y2 - y1_2) ** 2 + (z2 - z1_2) ** 2) ** 0.5
                 # Nr, Ni = find_adjusted_refractive_indices(m, mi, y1 / radius)
                 # Nr2, Ni2 = find_adjusted_refractive_indices(m, mi, y1_2 / radius)
-                t_per1, t_par1 = transmission_coefficient(y1, radius, m, mi, k)
-                t_per2, t_par2 = transmission_coefficient(y1_2, radius, m, mi, k)
-                x1_lab, y1_lab, z1_lab = coordinates_in_lab_plane(y1, z1, rotation_angle, radius)
-                x1_lab_2, y1_lab_2, z1_lab_2 = coordinates_in_lab_plane(y1_2, z1_2, rotation_angle, radius)
-                da1 = delta_angle(x1_lab, radius, m)
-                da2 = delta_angle(x1_lab_2, radius, m)
-                cos_t1 = cos_refracted_angle_mp(y1, radius, m)
-                cos_t2 = cos_refracted_angle_mp(y1_2, radius, m)
+                t_per1, t_par1 = transmission_coefficient(y1, m, mi, k)
+                t_per2, t_par2 = transmission_coefficient(y1_2, m, mi, k)
+                x1_lab, y1_lab, z1_lab = coordinates_in_lab_plane(y1, z1, rotation_angle)
+                x1_lab_2, y1_lab_2, z1_lab_2 = coordinates_in_lab_plane(y1_2, z1_2, rotation_angle)
+                da1 = delta_angle(x1_lab, m)
+                da2 = delta_angle(x1_lab_2, m)
+                cos_t1 = cos_refracted_angle_mp(y1, m)
+                cos_t2 = cos_refracted_angle_mp(y1_2, m)
                 N1, K1 = effective_refractive_indices(m, mi, cos_t1)
                 N2, K2 = effective_refractive_indices(m, mi, cos_t2)
             else:
@@ -121,19 +121,19 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, radius, type_, lines, k, solu
             print("Error in optical_len() function! Unknown parameter info. ")
     # For WKB:
     if type_ == "analytic" or type_ == "discrete":
-        l1 = (z_ + radius)
+        l1 = (z_ + 1)
         l2 = (z2_lab - z_)
         l1_2 = 0
         l2_2 = 0
         cur_region = "one_root"
         # In the case of WKB, there is no refraction, so instead of y1 use y2.
-        t_per1, t_par1 = transmission_coefficient(y2, radius, m, mi, k)
+        t_per1, t_par1 = transmission_coefficient(y2, m, mi, k)
         t_per2, t_par2 = t_per1, t_par1
-        x1_lab, y1_lab, z1_lab = coordinates_in_lab_plane(y2, z2, rotation_angle, radius)
-        da1 = delta_angle(x1_lab, radius, m)
+        x1_lab, y1_lab, z1_lab = coordinates_in_lab_plane(y2, z2, rotation_angle)
+        da1 = delta_angle(x1_lab, m)
         da2 = da1
-        cos_t1 = cos_refracted_angle_mp(y2, radius, m)
-        cos_t2 = cos_refracted_angle_mp(y2, radius, m)
+        cos_t1 = cos_refracted_angle_mp(y2, m)
+        cos_t2 = cos_refracted_angle_mp(y2, m)
         N1, K1 = effective_refractive_indices(m, mi, cos_t1)
         N2, K2 = effective_refractive_indices(m, mi, cos_t2)
 

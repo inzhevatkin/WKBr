@@ -18,10 +18,10 @@ class BoundaryLines(object):
 
 # Function for determining in which region a given point is located.
 # Returns: "one_root", "two_roots", "no_root"
-def region(y2, z2, R, m, lines):
-    if 0 <= y2 <= R and 0 <= z2 <= 2 * R:
-        if z2 > R:
-            if R == lines.R and m == lines.m:
+def region(y2, z2, m, lines):
+    if 0 <= y2 <= 1 and -1 <= z2 <= 1:
+        if z2 > 1:
+            if m == lines.m:
                 z_l1 = lines.a1 * y2 + lines.b1
                 y2_l2 = (z2 - lines.b2) / lines.a2
             else:

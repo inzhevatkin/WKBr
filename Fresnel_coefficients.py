@@ -4,9 +4,9 @@
 # calculations in the meridial plane (y, z).
 # I use the function when there is an imaginary refractive index (attenuation in the medium).
 # Formulas from Peter C.Y. Chang et al "Ray tracing in absorbing media" (2005).
-def transmission_coefficient(y1, R, mr, mi, k0):
-    sini = y1 / R
-    sint = y1 / (R * mr)
+def transmission_coefficient(y1, mr, mi, k0):
+    sini = y1
+    sint = y1 / mr
     cosi = (1 - sini ** 2) ** 0.5
     cost = (1 - sint ** 2) ** 0.5
     if mi == 0:
