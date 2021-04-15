@@ -63,7 +63,7 @@ def in_square(y, z, R):
 
 
 # Function for determining in which region a given point is located (without grazing and Descartes rays).
-# Returns: "one_root", "two_roots", "no_root"
+# Returns: "one_root", "two_roots", "no_root", "error".
 def region2(y2, z2, R, m):
     root_flag, y1, z1 = func(y2, z2, R, m, y2 / R)
     root_flag2, y1_2, z1_2 = func2(y2, z2, R, m, 1)
