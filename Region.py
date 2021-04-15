@@ -4,28 +4,43 @@ from math import sin, cos, asin, tan, isclose
 
 # This class stores the coefficients of the lines that bound regions with one solution, with two and without solutions.
 # Radius = 1.
+# z = a * y + b
 class BoundaryLines(object):
     def __init__(self, m):
-        sin_tmp = 1 / m
-        self.a1 = - sin_tmp / (1 - sin_tmp ** 2) ** 0.5
-        self.b1 = 1 - self.a1
-        psi = asin(((4 - m ** 2) / 3) ** 0.5)
-        theta = 2 * asin(sin(psi) / m) - psi
-        self.a2 = 1 / tan((theta - psi) / 2.)
-        self.b2 = 1 + cos(theta - self.a2 * sin(theta))
         self.m = m
+        # grazing ray:
+        tmp = 1 / (m ** 2 - 1) ** 0.5
+        self.a1 = - tmp
+        self.b1 = tmp
+        # Descartes ray:
+        sin_tmp = ((4 - m ** 2) / 3) ** 0.5
+        teta = asin(sin_tmp)
+        psi = 2 * asin(sin_tmp / m) - teta
+        k1 = tan((teta - psi) / 2)
+        self.a2 = - 1 / k1
+        self.b2 = sin_tmp / k1 - cos(teta)
+
+
+# check that the point in the sphere
+def in_sphere(y, z):
+    r2 = y ** 2 + z ** 2
+    if r2 <= 1:
+        return True
+    else:
+        return False
 
 
 # Function for determining in which region a given point is located.
-# Returns: "one_root", "two_roots", "no_root"
+# Returns: "one_root", "two_roots", "no_root", "error"
 def region(y2, z2, m, lines):
-    if 0 <= y2 <= 1 and -1 <= z2 <= 1:
-        if z2 > 1:
+    if in_sphere(y2, z2):
+        if z2 >= 0:
             if m == lines.m:
-                z_l1 = lines.a1 * y2 + lines.b1
-                y2_l2 = (z2 - lines.b2) / lines.a2
+                z_l1 = lines.a1 * y2 + lines.b1  # grazing ray
+                y2_l2 = (z2 - lines.b2) / lines.a2  # Descartes ray
             else:
                 print("Error in region() function!")
+                return "error"
             if z2 >= z_l1:
                 if y2 <= y2_l2:
                     return "two_roots"
@@ -37,6 +52,7 @@ def region(y2, z2, m, lines):
             return "one_root"
     else:
         print("Error in region() function!")
+        return "error"
 
 
 def in_square(y, z, R):
