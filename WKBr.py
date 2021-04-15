@@ -51,8 +51,6 @@ def find_convergence_factor(radius, m, l, inc_angle, refracted_angle):
 # The wave is linearly polarized along the x axis.
 def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analytic", find_grid=False,
                 solution_method="iterative"):
-    # Separate regions using rays:
-    lines = BoundaryLines(m, radius)
     # Find electric field WKB:
     f = open(path, 'w')
     f.write('x y z |E|^2 Ex.r Ex.i Ey.r Ey.i Ez.r Ez.i \n')
@@ -95,9 +93,16 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 z_cur = z_arr[i]
                 i += 1
 
+        # Normalize coordinates to get dimensionless:
+        x_cur /= radius
+        y_cur /= radius
+        z_cur /= radius
+        # Separate regions using rays:
+        lines = BoundaryLines(m)
+
         # The boundary is set analytically (not like in ADDA).
         # The usual sphere equation is used here. 0 coordinate system at the center of the sphere.
-        z_ = - (radius ** 2 - x_cur ** 2 - y_cur ** 2) ** 0.5
+        z_ = - (1 - x_cur ** 2 - y_cur ** 2) ** 0.5
         l1, l2, l1_2, l2_2, type2, cur_region, t_per1, t_per2, t_par1, t_par2, da1, da2, rotation_angle, \
         cos_t1, cos_t2, N1, K1, N2, K2 = optical_len(x_cur,
                                                       y_cur,
@@ -105,7 +110,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                                                       z_,
                                                       m,
                                                       mi,
-                                                      radius,
+                                                      1,
                                                       type,
                                                       lines,
                                                       k,
@@ -113,7 +118,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
 
         if type == "analytic" or type == "discrete" or type == "wkb+refraction":
             # WKBr version 1.
-            arg = find_arg(k, radius, N1, l1, l2)
+            arg = find_arg(k, 1, N1, l1, l2)
             attenuation1 = find_attenuation(k, l2, K1, cos_t1)
             exr_new = cos(arg) * attenuation1
             exi_new = sin(arg) * attenuation1
@@ -123,7 +128,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         elif type == "wkb+refraction6":
             # WKBr version 2.
             # Here I also rotate the electric field.
-            arg = find_arg(k, radius, N1, l1, l2)
+            arg = find_arg(k, 1, N1, l1, l2)
             attenuation1 = find_attenuation(k, l2, K1, cos_t1)
             exr_new = cos(arg) * attenuation1
             exi_new = sin(arg) * attenuation1
@@ -134,7 +139,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         elif type == "wkb+refraction7":
             # WKBr version 3.
             if cur_region == "one_root" or cur_region == "no_root":
-                arg = find_arg(k, radius, N1, l1, l2)
+                arg = find_arg(k, 1, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
                 exr_new = cos(arg) * attenuation1
                 exi_new = sin(arg) * attenuation1
@@ -143,9 +148,9 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 num_one_root += 1
             elif cur_region == "two_roots":
-                arg1 = find_arg(k, radius, N1, l1, l2)
+                arg1 = find_arg(k, 1, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
-                arg2 = find_arg(k, radius, N2, l1_2, l2_2)
+                arg2 = find_arg(k, 1, N2, l1_2, l2_2)
                 attenuation2 = find_attenuation(k, l2_2, K2, cos_t2)
                 exr_new1 = cos(arg1) * attenuation1
                 exr_new2 = cos(arg2) * attenuation2
@@ -163,7 +168,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         elif type == "wkb+refraction8":
             # WKBr version 4.
             if cur_region == "one_root":
-                arg = find_arg(k, radius, N1, l1, l2)
+                arg = find_arg(k, 1, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
                 exr_new = cos(arg) * attenuation1
                 exi_new = sin(arg) * attenuation1
@@ -172,9 +177,9 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 num_one_root += 1
             elif cur_region == "two_roots":
-                arg1 = find_arg(k, radius, N1, l1, l2)
+                arg1 = find_arg(k, 1, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
-                arg2 = find_arg(k, radius, N2, l1_2, l2_2)
+                arg2 = find_arg(k, 1, N2, l1_2, l2_2)
                 attenuation2 = find_attenuation(k, l2_2, K2, cos_t2)
                 exr_new1 = cos(arg1) * attenuation1
                 exr_new2 = cos(arg2) * attenuation2
@@ -197,7 +202,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         elif type == "wkb+refraction9":
             # WKBr version 5.
             if cur_region == "one_root":
-                arg = find_arg(k, radius, N1, l1, l2)
+                arg = find_arg(k, 1, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
                 exr_new = cos(arg) * attenuation1
                 exi_new = sin(arg) * attenuation1
@@ -208,9 +213,9 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 num_one_root += 1
             elif cur_region == "two_roots":
-                arg1 = find_arg(k, radius, m, l1, l2)
+                arg1 = find_arg(k, 1, m, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
-                arg2 = find_arg(k, radius, m, l1_2, l2_2)
+                arg2 = find_arg(k, 1, m, l1_2, l2_2)
                 attenuation2 = find_attenuation(k, l2_2, K2, cos_t2)
                 exr_new1 = cos(arg1) * attenuation1
                 exr_new2 = cos(arg2) * attenuation2
@@ -238,7 +243,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             # WKBr version 6.
             # Everything is the same as in WKBr v. 2, but we zero the electric field in the R0 region.
             if cur_region == "one_root" or cur_region == "two_roots":
-                arg = find_arg(k, radius, N1, l1, l2)
+                arg = find_arg(k, 1, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
                 exr_new = cos(arg) * attenuation1
                 exi_new = sin(arg) * attenuation1
@@ -254,7 +259,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 num_no_roots += 1
         elif type == "wkb+refraction11":
             # Everything is the same as in WKBr v.2, but here we account for "convergence factor".
-            arg = find_arg(k, radius, N1, l1, l2)
+            arg = find_arg(k, 1, N1, l1, l2)
             attenuation1 = find_attenuation(k, l2, K1, cos_t1)
             exr_new = cos(arg) * attenuation1
             exi_new = sin(arg) * attenuation1
@@ -264,7 +269,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             # TODO: Create a ray class and store the angle of incidence and refraction in it.
             ref_ang = acos(cos_t1)
             inc_ang = asin(m * sin(ref_ang))
-            K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+            K = find_convergence_factor(1, m, l2, inc_ang, ref_ang)
             exr_new *= K
             exi_new *= K
             eyr_new *= K
@@ -275,7 +280,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             num_one_root += 1
         elif type == "wkb+refraction12":
             # Everything is the same as in WKBr v.2, but here we account for "convergence factor", Fresnel coefficient.
-            arg = find_arg(k, radius, N1, l1, l2)
+            arg = find_arg(k, 1, N1, l1, l2)
             attenuation1 = find_attenuation(k, l2, K1, cos_t1)
             exr_new = cos(arg) * attenuation1
             exi_new = sin(arg) * attenuation1
@@ -286,7 +291,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
             ref_ang = acos(cos_t1)
             inc_ang = asin(m * sin(ref_ang))
-            K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+            K = find_convergence_factor(1, m, l2, inc_ang, ref_ang)
             exr_new *= K
             exi_new *= K
             eyr_new *= K
@@ -296,12 +301,11 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             e *= K
         else:
             print("Error in find_wkb_ef() function!")
-
-        f.write(str(x_cur) + ' ' + str(y_cur) + ' ' + str(z_cur) + ' ' + str(e) + ' '
+        # Write electric field
+        f.write(str(x_cur * radius) + ' ' + str(y_cur * radius) + ' ' + str(z_cur * radius) + ' ' + str(e) + ' '
                 + str(exr_new) + ' ' + str(exi_new) + ' '
                 + str(eyr_new) + ' ' + str(eyi_new) + ' '
                 + str(ezr_new) + ' ' + str(ezi_new) + '\n')
-
     f.close()
 
     print("Number of dots in one root region = ", num_one_root)

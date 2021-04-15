@@ -2,18 +2,18 @@ from iterative_method import func, func2, tolerance
 from math import sin, cos, asin, tan, isclose
 
 
-# Данный класс будет хранить коэффициенты линий, который ограничивают области с одним решением, с двумя и без решений.
+# This class stores the coefficients of the lines that bound regions with one solution, with two and without solutions.
+# Radius = 1.
 class BoundaryLines(object):
-    def __init__(self, m, R):
+    def __init__(self, m):
         sin_tmp = 1 / m
         self.a1 = - sin_tmp / (1 - sin_tmp ** 2) ** 0.5
-        self.b1 = R * (1 - self.a1)
+        self.b1 = 1 - self.a1
         psi = asin(((4 - m ** 2) / 3) ** 0.5)
         theta = 2 * asin(sin(psi) / m) - psi
         self.a2 = 1 / tan((theta - psi) / 2.)
-        self.b2 = R * (1 + cos(theta) - self.a2 * sin(theta))
+        self.b2 = 1 + cos(theta - self.a2 * sin(theta))
         self.m = m
-        self.R = R
 
 
 # Function for determining in which region a given point is located.
