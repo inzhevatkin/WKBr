@@ -17,7 +17,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
     rotation_angle = find_rotation_angle_in_mp(x2_lab, y2_lab)
 
     # For WKBr:
-    if type_ != "analytic" or type_ != "discrete":
+    if type_ != "analytic" and type_ != "discrete":
         try:
             # Defined output parameters.
             info = "not_success"

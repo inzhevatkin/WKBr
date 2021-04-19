@@ -64,10 +64,15 @@ def in_square(y, z, R):
 
 # Function for determining in which region a given point is located (without grazing and Descartes rays).
 # Returns: "one_root", "two_roots", "no_root", "error".
-def region2(y2, z2, R, m):
-    root_flag, y1, z1 = func(y2, z2, R, m, y2 / R)
-    root_flag2, y1_2, z1_2 = func2(y2, z2, R, m, 1)
-    if root_flag and root_flag2:
+def region2(y2, z2, m):
+    root_flag, y1, z1 = func(y2, z2, m, y2)
+    # root_flag2, y1_2, z1_2 = func2(y2, z2, R, m, 1)
+    if root_flag:
+        # "one_root"
+        root_flag2, y1_2, z1_2 = func(y2, z2, m, 1)
+        if root_flag2 and isclose(y1, y1_2, abs_tol=tolerance * 10) and isclose(z1, z1_2, abs_tol=tolerance * 10):
+            return "one_root"
+        # "two_roots"
         if isclose(y1, y1_2, abs_tol=tolerance) and isclose(z1, z1_2, abs_tol=tolerance):
             if in_square(y1, z1, R):
                 return "one_root"
@@ -78,12 +83,8 @@ def region2(y2, z2, R, m):
                 return "two_roots"
             else:
                 return "no_root"
-    elif root_flag and root_flag2 is False:
-        if in_square(y1, z1, R):
-            return "one_root"
-        else:
-            return "no_root"
-    elif root_flag is False and root_flag2 is False:
+    elif root_flag:
         return "no_root"
     else:
         print("Error in region2() function!")
+        return "error"

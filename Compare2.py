@@ -648,7 +648,7 @@ def prepare(input, output, type, R):
 
 # Данную функцию нужно использовать если элементы в сравниваемых таблицах находятся в одном порядке.
 # Перед использованием нужно привести файлы к типу "ADDA".
-def compare(path1, path2, R, m, lines):
+def compare(path1, path2, m, lines):
     print("Compare two files")
     f1 = open(path1, 'r')
     f1.readline()
@@ -708,8 +708,8 @@ def compare(path1, path2, R, m, lines):
             aver_error_l2 += norm_value ** 2
             aver_error_l1 += norm_value
             # Определим область куда попала точка
-            ym, zm = coordinates_in_meridional_plane(x1, y1, z1, R)
-            cur_region = region(ym, zm, R, m, lines)
+            ym, zm = coordinates_in_meridional_plane(x1, y1, z1)
+            cur_region = region(ym, zm, m, lines)
             # Считаю суммарную ошибку в каждой области
             if cur_region == "one_root":
                 aver_error_l2_one_root += norm_value ** 2
