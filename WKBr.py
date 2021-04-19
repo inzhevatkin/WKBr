@@ -260,7 +260,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 num_no_roots += 1
         elif type == "wkb+refraction11":
             # Everything is the same as in WKBr v.2, but here we account for "convergence factor".
-            arg = find_arg(k, 1, N1, l1, l2)
+            arg = find_arg(k, radius, N1, l1, l2)
             attenuation1 = find_attenuation(k, l2, K1, cos_t1)
             exr_new = cos(arg) * attenuation1
             exi_new = sin(arg) * attenuation1
@@ -270,7 +270,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             # TODO: Create a ray class and store the angle of incidence and refraction in it.
             ref_ang = acos(cos_t1)
             inc_ang = asin(m * sin(ref_ang))
-            K = find_convergence_factor(1, m, l2, inc_ang, ref_ang)
+            K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
             exr_new *= K
             exi_new *= K
             eyr_new *= K
@@ -281,7 +281,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             num_one_root += 1
         elif type == "wkb+refraction12":
             # Everything is the same as in WKBr v.2, but here we account for "convergence factor", Fresnel coefficient.
-            arg = find_arg(k, 1, N1, l1, l2)
+            arg = find_arg(k, radius, N1, l1, l2)
             attenuation1 = find_attenuation(k, l2, K1, cos_t1)
             exr_new = cos(arg) * attenuation1
             exi_new = sin(arg) * attenuation1
