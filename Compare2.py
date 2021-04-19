@@ -648,7 +648,7 @@ def prepare(input, output, type, R):
 
 # Данную функцию нужно использовать если элементы в сравниваемых таблицах находятся в одном порядке.
 # Перед использованием нужно привести файлы к типу "ADDA".
-def compare(path1, path2, m, lines):
+def compare(path1, path2, m, lines, radius):
     print("Compare two files")
     f1 = open(path1, 'r')
     f1.readline()
@@ -679,18 +679,18 @@ def compare(path1, path2, m, lines):
         # Конец файла.
         if len(numbers1) <= 1 or len(numbers2) <= 1:
             break
-        x1 = float(numbers1[0])
-        y1 = float(numbers1[1])
-        z1 = float(numbers1[2])
+        x1 = float(numbers1[0]) / radius
+        y1 = float(numbers1[1]) / radius
+        z1 = float(numbers1[2]) / radius
         exr1 = float(numbers1[4])
         exi1 = float(numbers1[5])
         eyr1 = float(numbers1[6])
         eyi1 = float(numbers1[7])
         ezr1 = float(numbers1[8])
         ezi1 = float(numbers1[9])
-        x2 = float(numbers2[0])
-        y2 = float(numbers2[1])
-        z2 = float(numbers2[2])
+        x2 = float(numbers2[0]) / radius
+        y2 = float(numbers2[1]) / radius
+        z2 = float(numbers2[2]) / radius
         exr2 = float(numbers2[4])
         exi2 = float(numbers2[5])
         eyr2 = float(numbers2[6])

@@ -76,7 +76,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
 
         if info == "success":
             if cur_region == "one_root" or cur_region == "no_root":
-                l1 = z1
+                l1 = abs(z1 + 1)
                 l2 = ((y2 - y1) ** 2 + (z2 - z1) ** 2) ** 0.5
                 l1_2 = 0
                 l2_2 = 0
@@ -91,9 +91,9 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                 N1, K1 = effective_refractive_indices(m, mi, cos_t1)
                 N2, K2 = 0, 0
             elif cur_region == "two_roots":
-                l1 = z1
+                l1 = abs(z1 + 1)
                 l2 = ((y2 - y1) ** 2 + (z2 - z1) ** 2) ** 0.5
-                l1_2 = z1_2
+                l1_2 = abs(z1_2 + 1)
                 l2_2 = ((y2 - y1_2) ** 2 + (z2 - z1_2) ** 2) ** 0.5
                 # Nr, Ni = find_adjusted_refractive_indices(m, mi, y1 / radius)
                 # Nr2, Ni2 = find_adjusted_refractive_indices(m, mi, y1_2 / radius)
@@ -121,8 +121,8 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
             print("Error in optical_len() function! Unknown parameter info. ")
     # For WKB:
     if type_ == "analytic" or type_ == "discrete":
-        l1 = (z_ + 1)
-        l2 = (z2_lab - z_)
+        l1 = abs(z_ + 1)
+        l2 = abs(z2_lab - z_)
         l1_2 = 0
         l2_2 = 0
         cur_region = "one_root"

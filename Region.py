@@ -21,7 +21,8 @@ class BoundaryLines(object):
         self.b2 = sin_tmp / k1 - cos(teta)
 
 
-# check that the point in the sphere
+# check that the point in the sphere.
+# R = 1.
 def in_sphere(y, z):
     r2 = y ** 2 + z ** 2
     if r2 <= 1:
@@ -31,6 +32,7 @@ def in_sphere(y, z):
 
 
 # Function for determining in which region a given point is located.
+# R = 1.
 # Returns: "one_root", "two_roots", "no_root", "error"
 def region(y2, z2, m, lines):
     if in_sphere(y2, z2):
@@ -51,7 +53,7 @@ def region(y2, z2, m, lines):
         else:
             return "one_root"
     else:
-        print("Error in region() function!")
+        print("Error in region() function! Point is not in sphere. Current (y2, z2) = ", y2, z2)
         return "error"
 
 
