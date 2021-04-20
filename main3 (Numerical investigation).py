@@ -19,11 +19,11 @@ if __name__ == "__main__":
             f0.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         elif version == "v1":
-            f1 = open(path + "dE-sc-wkbr (v1)" + str(size) + "-" + "all" + "-" + str(grid) + "-(region2) .dat", 'w')
+            f1 = open(path + "dE-sc-wkbr (v1)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f1.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         elif version == "v2":
-            f2 = open(path + "dE-sc-wkbr (v2)" + str(size) + "-" + "all" + "-" + str(grid) + "-(region2) .dat", 'w')
+            f2 = open(path + "dE-sc-wkbr (v2)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f2.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         elif version == "v3":
@@ -35,7 +35,7 @@ if __name__ == "__main__":
             f4.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         elif version == "v5":
-            f5 = open(path + "dE-sc-wkbr (v5)" + str(size) + "-" + "all" + "-" + str(grid) + "-(region2) .dat", 'w')
+            f5 = open(path + "dE-sc-wkbr (v5)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f5.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         elif version == "v11":
@@ -43,7 +43,7 @@ if __name__ == "__main__":
             f11.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         elif version == "v12":
-            f12 = open(path + "dE-sc-wkbr (v12)" + str(size) + "-" + "all" + "-" + str(grid) + "-(region2) .dat", 'w')
+            f12 = open(path + "dE-sc-wkbr (v12)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f12.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
 
