@@ -35,6 +35,8 @@ def in_sphere(y, z):
 # R = 1.
 # Returns: "one_root", "two_roots", "no_root", "error"
 def region(y2, z2, m, lines):
+    # empirical Descartes ray thickness parameter:
+    delta = 0.1
     if in_sphere(y2, z2):
         if z2 >= 0:
             if m == lines.m:
@@ -44,10 +46,12 @@ def region(y2, z2, m, lines):
                 print("Error in region() function!")
                 return "error"
             if z2 >= z_l1:
-                if y2 <= y2_l2:
+                if y2 < y2_l2 - delta:
                     return "two_roots"
-                else:
+                elif y2 > y2_l2 + delta:
                     return "no_root"
+                elif y2_l2 - delta <= y2 <= y2_l2 + delta:
+                    return region2(y2, z2, m)
             else:
                 return "one_root"
         else:
