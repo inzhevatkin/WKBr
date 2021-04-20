@@ -1,5 +1,5 @@
 tolerance = 1e-8
-max_iterations = 200
+max_iterations = 1000
 
 
 # Exact solution using iterative method.

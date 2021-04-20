@@ -67,26 +67,28 @@ def in_square(y, z, R):
 # Function for determining in which region a given point is located (without grazing and Descartes rays).
 # Returns: "one_root", "two_roots", "no_root", "error".
 def region2(y2, z2, m):
-    root_flag, y1, z1 = func(y2, z2, m, y2)
-    # root_flag2, y1_2, z1_2 = func2(y2, z2, R, m, 1)
-    if root_flag:
-        # "one_root"
-        root_flag2, y1_2, z1_2 = func(y2, z2, m, 1)
-        if root_flag2 and isclose(y1, y1_2, abs_tol=tolerance * 10) and isclose(z1, z1_2, abs_tol=tolerance * 10):
-            return "one_root"
-        # "two_roots"
-        if isclose(y1, y1_2, abs_tol=tolerance) and isclose(z1, z1_2, abs_tol=tolerance):
-            if in_square(y1, z1, R):
-                return "one_root"
+    if in_sphere(y2, z2):
+        if z2 >= 0:
+            root_flag, y1, z1 = func(y2, z2, m, y2)
+            if root_flag:
+                if z2 == 0:
+                    # small shift from the edge of the sphere:
+                    shift = 1e-10
+                    root_flag2, y1_2, z1_2 = func2(y2, z2, m, 1 - shift)
+                else:
+                    root_flag2, y1_2, z1_2 = func2(y2, z2, m, 1)
+                if root_flag2:
+                    if isclose(y1, y1_2, abs_tol=tolerance * 10) and isclose(z1, z1_2, abs_tol=tolerance * 10):
+                        return "one_root"
+                    else:
+                        return "two_roots"
+                else:
+                    return "one_root"
             else:
                 return "no_root"
         else:
-            if in_square(y1, z1, R) and in_square(y1_2, z1_2, R):
-                return "two_roots"
-            else:
-                return "no_root"
-    elif root_flag:
-        return "no_root"
+            return "one_root"
     else:
-        print("Error in region2() function!")
+        print("Error in region() function! Point is not in sphere. Current (y2, z2) = ", y2, z2)
         return "error"
+
