@@ -105,13 +105,17 @@ def find_difference(path1, path2, path3, type):
         Ezr2 = data2[:, 8]
         Ezi2 = data2[:, 9]
     f3 = open(path3, 'w')
-    f3.write("x y z E1 dExr dExi dEyr dEyi dEzr dEzi \n")
+    f3.write("x y z dE dExr dExi dEyr dEyi dEzr dEzi \n")
     for i in range(len(x)):
-        line = str(x[i]) + " " +str(y[i]) + " " + str(z[i]) + " " + \
-               str(E1[i]) + " " + \
-               str(Exr1[i] - Exr2[i]) + " " + str(Exi1[i] - Exi2[i]) + " " + \
-               str(Eyr1[i] - Eyr2[i]) + " " + str(Eyi1[i] - Eyi2[i]) + " " + \
-               str(Ezr1[i] - Ezr2[i]) + " " + str(Ezi1[i] - Ezi2[i]) + " \n"
+        dExr = Exr1[i] - Exr2[i]
+        dExi = Exi1[i] - Exi2[i]
+        dEyr = Eyr1[i] - Eyr2[i]
+        dEyi = Eyi1[i] - Eyi2[i]
+        dEzr = Ezr1[i] - Ezr2[i]
+        dEzi = Ezi1[i] - Ezi2[i]
+        dE = (dExr ** 2 + dExi ** 2 + dEyr ** 2 + dEyi ** 2 + dEzr ** 2 + dEzi ** 2) ** 0.5
+        line = str(x[i]) + " " + str(y[i]) + " " + str(z[i]) + " " + str(dE) + " " + \
+               str(dExr) + " " + str(dExi) + " " + str(dEyr) + " " + str(dEyi) + " " + str(dEzr) + " " +str(dEzi)+ " \n"
         f3.write(line)
     f3.close()
 
@@ -220,7 +224,7 @@ def plot3d_E(path, path2, R, m, lines, type, graph_title, component, section, v_
                     Enew[i] = Exrnew[i] ** 2 + Exinew[i] ** 2 + Eyrnew[i] ** 2 + Eyinew[i] ** 2 + Ezrnew[i] ** 2 + Ezinew[i] ** 2
                     Enew[i] = Enew[i] ** 0.5
                     Enew[i] = math.log10(Enew[i])
-    elif use_log == False:
+    elif use_log is False:
         if component == "real":
             for i in range(0, len(Exrnew)):
                 if isnan(Exrnew[i]) or isnan(Exinew[i]):
@@ -328,6 +332,43 @@ def plot3d(path, path2, section, graph_title, value_type):
     plt.close()
 
 
+# version = v1, v2 ...
+# section = x-section, y-section
+def diff_map(tail, version, section, section_coordinate=0.3125):
+    # Find the cross y-section:
+    path1 = path + "wkb_refraction (" + version + ")-" + tail
+    path1_section = path + "wkb_refraction (" + version + ")-" + section + "-" + tail
+    prepare_data(path1, path1_section, "adda", section, section_coordinate)
+
+    # Find the cross y-section bhfield:
+    path_bh = path + "bhfield" + "-" + tail
+    pathbh_adda = path + "bhfield-adda" + "-" + tail
+    scattnlay_bhfield_to_adda(path_bh, pathbh_adda, type, size / 2, grid)
+    path_bh_section = path + "bhfield-" + section + "-" + tail
+    prepare_data(pathbh_adda, path_bh_section, "adda", section, section_coordinate)
+
+    # Let's find the difference at each point:
+    path_dif = path + "wkb_refraction (" + version + ")-dif-" + tail
+    find_difference(path1_section, path_bh_section, path_dif, "bhfield")
+
+    # Building the map
+    path_map = path + "wkb_refraction (" + version + ")-dif-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
+    plot3d_E(path_dif,
+             path_map,
+             R,
+             m,
+             lines,
+             type="adda",
+             graph_title="",  # WKBv"+ str(version) +", both components
+             component="both",
+             section=section,
+             v_min=-2.5, v_max=0.5,
+             use_log=True,
+             use_small_region=False,
+             use_region="two_roots",
+             use_my_range=True)
+
+
 if __name__ == "__main__":
     size = 100
     grid = 160
@@ -340,176 +381,133 @@ if __name__ == "__main__":
     path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + "/"
     tail = str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
-    version = "Maps of error for WKBr v1, WKBr v2"
+    for version in ["Maps of error for WKBr v1, WKBr v2", "Maps of error for WKBr v5, WKBr v12"]:
+        if version == "WKB":
+            # Найдём сечение x-section WKB:
+            section_coordinate = 0.3125
+            path1 = path + "WKB from ADDA-" + tail
+            path1_section = path + "wkb-x-section-" + tail
+            prepare_data(path1, path1_section, "adda", "x-section", section_coordinate)
+            # Строим карту
+            path_map = path + "wkb-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
+            plot3d_E(path1_section,
+                     path_map,
+                     R,
+                     m,
+                     lines,
+                     type="adda",
+                     graph_title="",  # WKBv"+ str(version) +", both components
+                     component="both",
+                     section="x-section",
+                     v_min=-2.5, v_max=0.5,
+                     use_log=True,
+                     use_small_region=False,
+                     use_region="two_roots",
+                     use_my_range=False)
+        elif version == "Maps of error for WKBr v1, WKBr v2":
+            diff_map(tail, "v1", "y-section", section_coordinate=0.3125)
+            diff_map(tail, "v2", "y-section", section_coordinate=0.3125)
+        elif version == "Maps of error for WKBr v5, WKBr v12":
+            diff_map(tail, "v5", "y-section", section_coordinate=0.3125)
+            diff_map(tail, "v12", "y-section", section_coordinate=0.3125)
+        elif version == "Maps of error for WKBr v2, WKBr v3, exact":
+            # Find the cross y-section WKBr v2:
+            path2 = path + "wkb_refraction (v2)-" + tail
+            path2_section = path + "wkb_refraction (v2)-y-section-" + tail
+            prepare_data(path2, path2_section, "adda", "y-section", section_coordinate)
 
-    if version == "WKB":
-        # Найдём сечение x-section WKB:
-        section_coordinate = 0.3125
-        path1 = path + "WKB from ADDA-" + tail
-        path1_section = path + "wkb-x-section-" + tail
-        prepare_data(path1, path1_section, "adda", "x-section", section_coordinate)
-        # Строим карту
-        path_map = path + "wkb-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
-        plot3d_E(path1_section,
-                 path_map,
-                 R,
-                 m,
-                 lines,
-                 type="adda",
-                 graph_title="",  # WKBv"+ str(version) +", both components
-                 component="both",
-                 section="x-section",
-                 v_min=-2.5, v_max=0.5,
-                 use_log=True,
-                 use_small_region=False,
-                 use_region="two_roots",
-                 use_my_range=False)
-    elif version == "Maps of error for WKBr v1, WKBr v2":
-        # Find the cross section y-section WKBr v1:
-        section_coordinate = 0.3125
-        path1 = path + "wkb_refraction (v1)-" + tail
-        path1_section = path + "wkb_refraction (v1)-y-section-" + tail
-        prepare_data(path1, path1_section, "adda", "y-section", section_coordinate)
+            # Find the y-section bhfield:
+            path_bh = path + "bhfield" + "-" + tail
+            pathbh_adda = path + "bhfield-adda" + "-" + tail
+            scattnlay_bhfield_to_adda(path_bh, pathbh_adda, type, size / 2, grid)
+            path_bh_section = path + "bhfield-y-section" + "-" + tail
+            prepare_data(pathbh_adda, path_bh_section, "adda", "y-section", section_coordinate)
 
-        # Find the cross y-section bhfield:
-        path_bh = path + "bhfield" + "-" + tail
-        pathbh_adda = path + "bhfield-adda" + "-" + tail
-        scattnlay_bhfield_to_adda(path_bh, pathbh_adda, type, size / 2, grid)
-        path_bh_section = path + "bhfield-y-section" + "-" + tail
-        prepare_data(pathbh_adda, path_bh_section, "adda", "y-section", section_coordinate)
+            # Let's find the difference at each point:
+            path_dif = path + "wkb_refraction (v2)-dif-" + tail
+            find_difference(path2_section, path_bh_section, path_dif, "bhfield")
 
-        # Let's find the difference at each point:
-        path_dif = path + "wkb_refraction (v1)-dif-" + tail
-        find_difference(path1_section, path_bh_section, path_dif, "bhfield")
-
-        # Building the map
-        path_map = path + "wkb_refraction (v1)-dif-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
-        plot3d_E(path_dif,
-                 path_map,
-                 R,
-                 m,
-                 lines,
-                 type="adda",
-                 graph_title="",  # WKBv"+ str(version) +", both components
-                 component="both",
-                 section="y-section",
-                 v_min=-2.5, v_max=0.5,
-                 use_log=True,
-                 use_small_region=False,
-                 use_region="two_roots",
-                 use_my_range=True)
-
-        # Find the cross x-section WKBr v2:
-        path2 = path + "wkb_refraction (v2)-" + tail
-        path2_section = path + "wkb_refraction (v2)-y-section-" + tail
-        prepare_data(path2, path2_section, "adda", "y-section", section_coordinate)
-
-        # Find the difference at each point:
-        path_dif2 = path + "wkb_refraction (v2)-dif-" + tail
-        path_bh_section = path + "bhfield-y-section" + "-" + tail
-        find_difference(path2_section, path_bh_section, path_dif2, "bhfield")
-
-        # Building the map
-        path_map2 = path + "wkb_refraction (v2)-dif-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
-        plot3d_E(path_dif2,
-                 path_map2,
-                 R,
-                 m,
-                 lines,
-                 type="adda",
-                 graph_title="",  # WKBv"+ str(version) +", both components
-                 component="both",
-                 section="y-section",
-                 v_min=-2.5, v_max=0.5,
-                 use_log=True,
-                 use_small_region=False,
-                 use_region="two_roots",
-                 use_my_range=True)
-    elif version == "Maps of e.f. amplitude error for WKBr v2, WKBr v3, exact":
-        # Найдём сечение x-section WKBr v2:
-        path2 = path + "wkb_refraction (v2)-" + tail
-        path2_section = path + "wkb_refraction (v2)-x-section-" + tail
-        prepare_data(path2, path2_section, "adda", "x-section", section_coordinate)
-
-        # Строим карту
-        path_map2 = path + "wkb_refraction (v2)-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
-        plot3d_E(path2_section,
-                 path_map2,
-                 R,
-                 m,
-                 lines,
-                 type="adda",
-                 graph_title="",  # WKBv"+ str(version) +", both components
-                 component="both",
-                 section="x-section",
-                 v_min=0.95, v_max=1.05,
-                 use_log=False,
-                 use_small_region=True,
-                 use_region="two_roots",
-                 use_my_range=True)
-        # Найдём сечение x-section WKBr v3:
-        path3 = path + "wkb_refraction (v3)-" + tail
-        path3_section = path + "wkb_refraction (v3)-x-section-" + tail
-        prepare_data(path3, path3_section, "adda", "x-section", section_coordinate)
-
-        # Строим карту
-        path_map3 = path + "wkb_refraction (v3)-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
-        plot3d_E(path3_section,
-                 path_map3,
-                 R,
-                 m,
-                 lines,
-                 type="adda",
-                 graph_title="",  # WKBv"+ str(version) +", both components
-                 component="both",
-                 section="x-section",
-                 v_min=0.95, v_max=1.05,
-                 use_log=False,
-                 use_small_region=True,
-                 use_region="two_roots",
-                 use_my_range=False)
-        # Найдём сечение x-section bhfield:
-        path_bh = path + "bhfield" + "-" + tail
-        pathbh_adda = path + "bhfield-adda" + "-" + tail
-        path_bh_section = path + "bhfield-x-section" + "-" + tail
-        scattnlay_bhfield_to_adda(path_bh, pathbh_adda, type, size / 2, grid)
-        prepare_data(pathbh_adda, path_bh_section, "adda", "x-section", section_coordinate)
-        # Строим карту
-        path_map4 = path + "bhfield-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
-        plot3d_E(path_bh_section,
-                 path_map4,
-                 R,
-                 m,
-                 lines,
-                 type="adda",
-                 graph_title="",  # WKBv"+ str(version) +", both components
-                 component="both",
-                 section="x-section",
-                 v_min=0.95, v_max=1.05,
-                 use_log=False,
-                 use_small_region=True,
-                 use_region="two_roots",
-                 use_my_range=False)
-    elif version == "Maps of e.f. amplitude error for WKBr v2, WKBr v4, exact (no solution region)":
-        # Найдём сечение x-section bhfield:
-        path_bh = path + type + "-" + tail
-        pathbh_adda = path + type + "-adda" + "-" + tail
-        path_bh_section = path + type + "-x-section" + "-" + tail
-        scattnlay_bhfield_to_adda(path_bh, pathbh_adda, type, size / 2, grid)
-        prepare_data(pathbh_adda, path_bh_section, "adda", "x-section", section_coordinate)
-        # Строим карту
-        path_map4 = path + "bhfield-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
-        plot3d_E(path_bh_section,
-                 path_map4,
-                 R,
-                 m,
-                 lines,
-                 type="adda",
-                 graph_title="",  # WKBv"+ str(version) +", both components
-                 component="both",
-                 section="x-section",
-                 v_min=0.95, v_max=1.05,
-                 use_log=False,
-                 use_small_region=False,
-                 use_region="no_root",
-                 use_my_range=False)
+            # Map building
+            path_map2 = path + "wkb_refraction (v2)-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
+            plot3d_E(path_dif,
+                     path_map2,
+                     R,
+                     m,
+                     lines,
+                     type="adda",
+                     graph_title="",  # WKBv"+ str(version) +", both components
+                     component="both",
+                     section="y-section",
+                     v_min=0.5, v_max=-2.5,
+                     use_log=True,
+                     use_small_region=False,
+                     use_region="two_roots",
+                     use_my_range=True)
+            '''
+            # Найдём сечение x-section WKBr v3:
+            path3 = path + "wkb_refraction (v3)-" + tail
+            path3_section = path + "wkb_refraction (v3)-x-section-" + tail
+            prepare_data(path3, path3_section, "adda", "x-section", section_coordinate)
+    
+            # Строим карту
+            path_map3 = path + "wkb_refraction (v3)-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
+            plot3d_E(path3_section,
+                     path_map3,
+                     R,
+                     m,
+                     lines,
+                     type="adda",
+                     graph_title="",  # WKBv"+ str(version) +", both components
+                     component="both",
+                     section="x-section",
+                     v_min=0.95, v_max=1.05,
+                     use_log=False,
+                     use_small_region=True,
+                     use_region="two_roots",
+                     use_my_range=False)
+            # Найдём сечение x-section bhfield:
+            path_bh = path + "bhfield" + "-" + tail
+            pathbh_adda = path + "bhfield-adda" + "-" + tail
+            path_bh_section = path + "bhfield-x-section" + "-" + tail
+            scattnlay_bhfield_to_adda(path_bh, pathbh_adda, type, size / 2, grid)
+            prepare_data(pathbh_adda, path_bh_section, "adda", "x-section", section_coordinate)
+            # Строим карту
+            path_map4 = path + "bhfield-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
+            plot3d_E(path_bh_section,
+                     path_map4,
+                     R,
+                     m,
+                     lines,
+                     type="adda",
+                     graph_title="",  # WKBv"+ str(version) +", both components
+                     component="both",
+                     section="x-section",
+                     v_min=0.95, v_max=1.05,
+                     use_log=False,
+                     use_small_region=True,
+                     use_region="two_roots",
+                     use_my_range=False)
+            '''
+        elif version == "Maps of e.f. amplitude error for WKBr v2, WKBr v4, exact (no solution region)":
+            # Найдём сечение x-section bhfield:
+            path_bh = path + type + "-" + tail
+            pathbh_adda = path + type + "-adda" + "-" + tail
+            path_bh_section = path + type + "-x-section" + "-" + tail
+            scattnlay_bhfield_to_adda(path_bh, pathbh_adda, type, size / 2, grid)
+            prepare_data(pathbh_adda, path_bh_section, "adda", "x-section", section_coordinate)
+            # Строим карту
+            path_map4 = path + "bhfield-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
+            plot3d_E(path_bh_section,
+                     path_map4,
+                     R,
+                     m,
+                     lines,
+                     type="adda",
+                     graph_title="",  # WKBv"+ str(version) +", both components
+                     component="both",
+                     section="x-section",
+                     v_min=0.95, v_max=1.05,
+                     use_log=False,
+                     use_small_region=False,
+                     use_region="no_root",
+                     use_my_range=False)
