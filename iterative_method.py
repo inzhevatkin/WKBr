@@ -21,10 +21,15 @@ def func(y2, z2, m, init_approx):
         tmp2 = y2 + z2 * g
         tmp3 = 1 + g ** 2
         sin_new = (tmp2 + g * (tmp3 - tmp2 ** 2) ** 0.5) / tmp3
+        # Optimization for the case when the algorithm diverges:
+        if sin_new > 1 or sin_new < 0:
+            break
+
         # I find what for a given sine (sin_new) the function on the right is equal:
         cos_new = (1 - sin_new ** 2) ** 0.5
         tmp1_new = (m ** 2 - sin_new ** 2) ** 0.5
         g_new = sin_new * (tmp1_new - cos_new) / (sin_new ** 2 + cos_new * tmp1_new)
+
         # I find what for a given sine (sin_new) the function on the left is equal:
         fnew = (sin_new - y2) / (z2 + cos_new)
         d = abs(fnew - g_new)
@@ -62,6 +67,9 @@ def func2(y2, z2, m, init_approx):
         tmp1 = f ** 2 + 1
         tmp2 = tmp1 ** 0.5
         sin_new = f * m / ((m ** 2 + 1) * tmp1 - 2 * m * tmp2) ** 0.5
+        # Optimization for the case when the algorithm diverges:
+        if sin_new > 1 or sin_new < 0:
+            break
 
         # I find what for a given sine (sin_new) the function on the left is equal:
         cos_new = (1 - sin_new ** 2) ** 0.5
