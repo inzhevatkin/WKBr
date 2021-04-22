@@ -1,5 +1,5 @@
 import numpy as np
-from math import sin, cos, exp, acos, asin
+from math import sin, cos, exp, acos, asin, pi
 from Region import BoundaryLines
 from optical_len import optical_len
 from Coordinate_systems import apply_rotation_electric_field_vector, sum_ef, apply_transmission_coefficient
@@ -135,8 +135,10 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 apply_rotation_electric_field_vector(exr_new, exi_new, da1)
             e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
             num_one_root += 1
-        elif type == "wkb+refraction7":
+        elif type == "wkb+refraction7" or type == "wkb+refraction13":
             # WKBr version 3.
+            # WKBr sums the electric field in the double solution region.
+            # "wkb+refraction13": here I also take into account the phase pi/2.
             if cur_region == "one_root" or cur_region == "no_root":
                 arg = find_arg(k, radius, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
@@ -150,6 +152,8 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 arg1 = find_arg(k, radius, N1, l1, l2)
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1)
                 arg2 = find_arg(k, radius, N2, l1_2, l2_2)
+                if type == "wkb+refraction13":
+                    arg2 += pi / 2
                 attenuation2 = find_attenuation(k, l2_2, K2, cos_t2)
                 exr_new1 = cos(arg1) * attenuation1
                 exr_new2 = cos(arg2) * attenuation2

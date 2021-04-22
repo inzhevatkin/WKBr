@@ -67,7 +67,6 @@ class TestRegion(TestCase):
         f.close()
 
         # read from Mathematica test data:
-        '''
         m = 1.01
         lines = BoundaryLines(m)
         f = open("C:/Users/konstantin/PycharmProjects/WKBr2/Test data, different number of solutions, m=1.01.dat", 'r')
@@ -92,7 +91,6 @@ class TestRegion(TestCase):
             else:
                 print("Error in test_region2() function! Undefined parameter n.")
         f.close()
-        '''
 
         stop = timeit.default_timer()
         print('Time [sec]: ', stop - start)
