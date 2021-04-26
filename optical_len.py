@@ -27,9 +27,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
             z1_2 = 0
             # We use an iterative algorithm:
             if solution == "iterative":
-                if type_ == "wkb+refraction" or type_ == "wkb+refraction4" or \
-                        type_ == "wkb+refraction5" or type_ == "wkb+refraction6" or \
-                            type_ == "wkb+refraction11" or type_ == "wkb+refraction12":
+                if type_ == "wkb+refraction4" or type_ == "wkb+refraction5" or type_ == "wkb+refraction11":
                     # The first option: in the 1,2 solution region, we find only one root.
                     # In the 0 solution we use WKB.
                     cur_region = region(y2, z2, m, lines)
@@ -38,6 +36,17 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                         info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, "one_root")
                     elif cur_region == "no_root":
                         info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, "no_root")
+                    else:
+                        print("Error in optical_len() function! In the first option.")
+                elif type_ == "wkb+refraction" or type_ == "wkb+refraction6" or type_ == "wkb+refraction12":
+                    # The first option: in the 1,2 solution region, we find only one root.
+                    # In the 0 solution we use zero.
+                    cur_region = region(y2, z2, m, lines)
+                    if cur_region == "one_root" or cur_region == "two_roots":
+                        cur_region = "one_root"
+                        info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, "one_root")
+                    elif cur_region == "no_root":
+                        info = "no_calculation"
                     else:
                         print("Error in optical_len() function! In the first option.")
                 elif type_ == "wkb+refraction2" or type_ == "wkb+refraction7" or type_ == "wkb+refraction13":

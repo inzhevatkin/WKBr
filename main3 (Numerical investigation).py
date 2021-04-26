@@ -7,13 +7,13 @@ import os
 size = 100
 grid = 160
 type = "bhfield"  # "WKB from ADDA" #  #  scattnlay "bhfield" #
-m = [1.01, 1.05, 1.1, 1.2, 1.3]  # 1.01, 1.05, 1.1, 1.2, 1.3
+m = [1.1]  # 1.01, 1.05, 1.1, 1.2, 1.3
 m_im = 0
 # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section/"
 path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
 
 if __name__ == "__main__":
-    for version in ["v13"]:
+    for version in ["v1", "v2", "v5", "v12"]:
         if version == "wkb":
             f0 = open(path + "dE-sc-wkb" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f0.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
