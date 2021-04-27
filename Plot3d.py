@@ -83,7 +83,7 @@ def find_difference(path1, path2, path3, type):
     print("find_difference ", path1, " ", path2, " ", path3)
     if type == "scattnlay":
         print("Not yet implemented.")
-    elif type == "bhfield":
+    elif type == "adda":
         data1 = np.loadtxt(path1, dtype=np.float32, delimiter=" ", skiprows=1, usecols=range(10))
         x = data1[:, 0]
         y = data1[:, 1]
@@ -97,7 +97,6 @@ def find_difference(path1, path2, path3, type):
         Ezi1 = data1[:, 9]
 
         data2 = np.loadtxt(path2, dtype=np.float32, delimiter=" ", skiprows=1, usecols=range(10))
-        E2 = data2[:, 3]
         Exr2 = data2[:, 4]
         Exi2 = data2[:, 5]
         Eyr2 = data2[:, 6]
@@ -333,23 +332,24 @@ def plot3d(path, path2, section, graph_title, value_type):
 
 
 # version = v1, v2 ...
-# section = x-section, y-section
-def diff_map(tail, version, section, section_coordinate=0.3125):
+# section = x-section, y-section.
+# type_exact - exact solution type.
+def diff_map(tail, version, section, type_exact, section_coordinate=0.3125):
     # Find the cross y-section:
     path1 = path + "wkb_refraction (" + version + ")-" + tail
     path1_section = path + "wkb_refraction (" + version + ")-" + section + "-" + tail
     prepare_data(path1, path1_section, "adda", section, section_coordinate)
 
-    # Find the cross y-section bhfield:
-    path_bh = path + "bhfield" + "-" + tail
-    pathbh_adda = path + "bhfield-adda" + "-" + tail
-    scattnlay_bhfield_to_adda(path_bh, pathbh_adda, type, size / 2, grid)
-    path_bh_section = path + "bhfield-" + section + "-" + tail
-    prepare_data(pathbh_adda, path_bh_section, "adda", section, section_coordinate)
+    # Find the cross section exact:
+    path_ex = path + type_exact + "-" + tail
+    pathex_adda = path + type_exact + "-adda" + "-" + tail
+    scattnlay_bhfield_to_adda(path_ex, pathex_adda, type_exact, size / 2, grid)
+    path_ex_section = path + type_exact + "-" + section + "-" + tail
+    prepare_data(pathex_adda, path_ex_section, "adda", section, section_coordinate)
 
     # Let's find the difference at each point:
     path_dif = path + "wkb_refraction (" + version + ")-dif-" + tail
-    find_difference(path1_section, path_bh_section, path_dif, "bhfield")
+    find_difference(path1_section, path_ex_section, path_dif, "adda")
 
     # Building the map
     path_map = path + "wkb_refraction (" + version + ")-dif-" + str(size) + "-" + str(m) + "-" + str(grid) + ".png"
@@ -370,18 +370,21 @@ def diff_map(tail, version, section, section_coordinate=0.3125):
 
 
 if __name__ == "__main__":
-    size = 100
-    grid = 160
+    size = 100  # 500
+    grid = 160  # 100
     R = size / 2
     m = 1.1
-    m_im = 0
-    type = "bhfield" # "scattnlay" #
-    section_coordinate = 0 # 2.5 #
-    lines = BoundaryLines(m)
+    m_im = 0 # 0.01
+    type = "bhfield" #"scattnlay" #
+    section = "y-section"
+    section_coordinate = 0.3125 # 2.5252  # 0.3125
     path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + "/"
+    # tail = str(size) + "-" + str(m) + "-" + str(m_im) + "-" + str(grid) + ".dat"
     tail = str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
-    for version in ["Maps of error for WKBr v1, WKBr v2", "Maps of error for WKBr v5, WKBr v12"]:
+    lines = BoundaryLines(m)
+
+    for version in ["Maps of error for WKBr v5"]:  # "Maps of error for WKBr v1"
         if version == "WKB":
             # Найдём сечение x-section WKB:
             section_coordinate = 0.3125
@@ -404,12 +407,14 @@ if __name__ == "__main__":
                      use_small_region=False,
                      use_region="two_roots",
                      use_my_range=False)
-        elif version == "Maps of error for WKBr v1, WKBr v2":
-            diff_map(tail, "v1", "y-section", section_coordinate=0.3125)
-            diff_map(tail, "v2", "y-section", section_coordinate=0.3125)
-        elif version == "Maps of error for WKBr v5, WKBr v12":
-            diff_map(tail, "v5", "y-section", section_coordinate=0.3125)
-            diff_map(tail, "v12", "y-section", section_coordinate=0.3125)
+        elif version == "Maps of error for WKBr v1":
+            diff_map(tail, "v1", section, type, section_coordinate=section_coordinate)
+        elif version == "Maps of error for WKBr v2":
+            diff_map(tail, "v2", section, type, section_coordinate=section_coordinate)
+        elif version == "Maps of error for WKBr v5":
+            diff_map(tail, "v5", section, type, section_coordinate=section_coordinate)
+        elif version == "Maps of error for WKBr v12":
+            diff_map(tail, "v12", section, type, section_coordinate=section_coordinate)
         elif version == "Maps of error for WKBr v2, WKBr v3, exact":
             # Find the cross y-section WKBr v2:
             path2 = path + "wkb_refraction (v2)-" + tail
@@ -488,7 +493,7 @@ if __name__ == "__main__":
                      use_region="two_roots",
                      use_my_range=False)
             '''
-        elif version == "Maps of e.f. amplitude error for WKBr v2, WKBr v4, exact (no solution region)":
+        elif version == "Maps of error for WKBr v2, WKBr v4, exact (no solution region)":
             # Найдём сечение x-section bhfield:
             path_bh = path + type + "-" + tail
             pathbh_adda = path + type + "-adda" + "-" + tail

@@ -4,16 +4,16 @@ import os
 
 # This file main3 (Numerical investigation).py  is needed to find the average error for a section / particle.
 
-size = 100
-grid = 160
-type = "bhfield"  # "WKB from ADDA" #  #  scattnlay "bhfield" #
+size = 500
+grid = 100
+type = "scattnlay" #"bhfield" #"scattnlay"  # "WKB from ADDA" #  #  scattnlay "bhfield" #
 m = [1.1]  # 1.01, 1.05, 1.1, 1.2, 1.3
-m_im = 0
+m_im = 0.01  # 0.01
 # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section/"
 path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
 
 if __name__ == "__main__":
-    for version in ["v1", "v2", "v5", "v12"]:
+    for version in ["v2", "v5", "v12"]: # "v1", "v2", "v12"
         if version == "wkb":
             f0 = open(path + "dE-sc-wkb" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f0.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
@@ -125,6 +125,38 @@ if __name__ == "__main__":
                          str(aver_error_l1_one_root) + ' ' +
                          str(aver_error_l1_two_root) + ' ' +
                          str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "v5":
+                # WKBr with rotation of the electric field + Fresnel transmission coefficients.
+                path_wkb_refraction5 = path + "wkb_refraction (v5)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction5, grid, type="wkb+refraction14")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
+                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction5, i, lines, size / 2)
+                f5.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "v12":
+                # Everything is the same as in WKBr v.2, but here we account for "convergence factor", Fresnel coefficient.
+                path_wkb_refraction12 = path + "wkb_refraction (v12)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction12, grid, type="wkb+refraction12")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
+                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction12, i, lines, size / 2)
+                f12.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
             elif version == "v3":
                 # WKBr sums the electric field in the double solution region.
                 path_wkb_refraction3 = path + "wkb_refraction (v3)-" + tail
@@ -156,22 +188,6 @@ if __name__ == "__main__":
                          str(aver_error_l1_one_root) + ' ' +
                          str(aver_error_l1_two_root) + ' ' +
                          str(aver_error_l1_no_root) + ' ' + '\n')
-            elif version == "v5":
-                # WKBr with rotation of the electric field + Fresnel transmission coefficients.
-                path_wkb_refraction5 = path + "wkb_refraction (v5)-" + tail
-                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction5, grid, type="wkb+refraction9")
-                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
-                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
-                    compare(pathsc_adda, path_wkb_refraction5, i, lines, size / 2)
-                f5.write(str(i) + ' ' +
-                         str(aver_error_l2) + ' ' +
-                         str(aver_error_l2_one_root) + ' ' +
-                         str(aver_error_l2_two_root) + ' ' +
-                         str(aver_error_l2_no_root) + ' ' +
-                         str(aver_error_l1) + ' ' +
-                         str(aver_error_l1_one_root) + ' ' +
-                         str(aver_error_l1_two_root) + ' ' +
-                         str(aver_error_l1_no_root) + ' ' + '\n')
             elif version == "v11":
                 # Everything is the same as in WKBr v.2, but here we account for "convergence factor".
                 path_wkb_refraction11 = path + "wkb_refraction (v11)-" + tail
@@ -180,22 +196,6 @@ if __name__ == "__main__":
                 aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
                     compare(pathsc_adda, path_wkb_refraction11, i, lines, size / 2)
                 f11.write(str(i) + ' ' +
-                         str(aver_error_l2) + ' ' +
-                         str(aver_error_l2_one_root) + ' ' +
-                         str(aver_error_l2_two_root) + ' ' +
-                         str(aver_error_l2_no_root) + ' ' +
-                         str(aver_error_l1) + ' ' +
-                         str(aver_error_l1_one_root) + ' ' +
-                         str(aver_error_l1_two_root) + ' ' +
-                         str(aver_error_l1_no_root) + ' ' + '\n')
-            elif version == "v12":
-                # Everything is the same as in WKBr v.2, but here we account for "convergence factor", Fresnel coefficient.
-                path_wkb_refraction12 = path + "wkb_refraction (v12)-" + tail
-                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction12, grid, type="wkb+refraction12")
-                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
-                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
-                    compare(pathsc_adda, path_wkb_refraction12, i, lines, size / 2)
-                f12.write(str(i) + ' ' +
                          str(aver_error_l2) + ' ' +
                          str(aver_error_l2_one_root) + ' ' +
                          str(aver_error_l2_two_root) + ' ' +

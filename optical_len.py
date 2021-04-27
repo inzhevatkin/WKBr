@@ -38,7 +38,8 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                         info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, "no_root")
                     else:
                         print("Error in optical_len() function! In the first option.")
-                elif type_ == "wkb+refraction" or type_ == "wkb+refraction6" or type_ == "wkb+refraction12":
+                elif type_ == "wkb+refraction" or type_ == "wkb+refraction6" or type_ == "wkb+refraction12" \
+                        or type_ == "wkb+refraction14":
                     # The first option: in the 1,2 solution region, we find only one root.
                     # In the 0 solution we use zero.
                     cur_region = region(y2, z2, m, lines)
