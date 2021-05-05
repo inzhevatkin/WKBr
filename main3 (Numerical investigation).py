@@ -4,16 +4,17 @@ import os
 
 # This file main3 (Numerical investigation).py  is needed to find the average error for a section / particle.
 
-size = 500
-grid = 100
-type = "scattnlay" #"bhfield" #"scattnlay"  # "WKB from ADDA" #  #  scattnlay "bhfield" #
-m = [1.1]  # 1.01, 1.05, 1.1, 1.2, 1.3
-m_im = 0.01  # 0.01
+size = 100
+grid = 160
+type = "bhfield"  # "bhfield" #"scattnlay"  # "WKB from ADDA" #  #  scattnlay "bhfield" #
+m = [1.01, 1.05, 1.1, 1.2, 1.3]  # 1.01, 1.05, 1.1, 1.2, 1.3
+m_im = 0  # 0.01
 # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section/"
 path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
+# path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section (clear)/"
 
 if __name__ == "__main__":
-    for version in ["v2", "v5", "v12"]: # "v1", "v2", "v12"
+    for version in ["wkb"]: # "v1", "v2", "v5", "v12", "v7", "v13", "v13-2"
         if version == "wkb":
             f0 = open(path + "dE-sc-wkb" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f0.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
@@ -26,9 +27,9 @@ if __name__ == "__main__":
             f2 = open(path + "dE-sc-wkbr (v2)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f2.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
-        elif version == "v3":
-            f3 = open(path + "dE-sc-wkbr (v3)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
-            f3.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
+        elif version == "v7":
+            f7 = open(path + "dE-sc-wkbr (v7)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
+            f7.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         elif version == "v4":
             f4 = open(path + "dE-sc-wkbr (v4)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
@@ -50,15 +51,22 @@ if __name__ == "__main__":
             f13 = open(path + "dE-sc-wkbr (v13)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f13.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                       "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
+        elif version == "v13-2":
+            f13_2 = open(path + "dE-sc-wkbr (v13-2)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
+            f13_2.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
+                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         for i in m:
             print("Current size = ", size)
             print("Current grid = ", grid)
             print("Current m = ", i)
             print("Current version: ", version)
+            # tail = str(size) + "-" + str(i) + "-" + str(m_im) + "-" + str(grid) + ".dat"
+
             if m_im != 0:
                 tail = str(size) + "-" + str(i) + "-" + str(m_im) + "-" + str(grid) + ".dat"
             else:
                 tail = str(size) + "-" + str(i) + "-" + str(grid) + ".dat"
+
             # Let's create a class object that will constrain regions.
             lines = BoundaryLines(i)
             pathsc = path + type + "-" + tail
@@ -157,14 +165,48 @@ if __name__ == "__main__":
                          str(aver_error_l1_one_root) + ' ' +
                          str(aver_error_l1_two_root) + ' ' +
                          str(aver_error_l1_no_root) + ' ' + '\n')
-            elif version == "v3":
+            elif version == "v7":
                 # WKBr sums the electric field in the double solution region.
-                path_wkb_refraction3 = path + "wkb_refraction (v3)-" + tail
-                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction3, grid, type="wkb+refraction7")
+                path_wkb_refraction7 = path + "wkb_refraction (v7)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction7, grid, type="wkb+refraction7")
                 aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root,\
                     aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
-                    compare(pathsc_adda, path_wkb_refraction3, i, lines, size / 2)
-                f3.write(str(i) + ' ' +
+                    compare(pathsc_adda, path_wkb_refraction7, i, lines, size / 2)
+                f7.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "v13":
+                # WKBr sums the electric field in the double solution region.
+                # It also account for additional phase pi/2.
+                path_wkb_refraction13 = path + "wkb_refraction (v13)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction13, grid, type="wkb+refraction13")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root,\
+                    aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction13, i, lines, size / 2)
+                f13.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "v13-2":
+                # WKBr sums the electric field in the double solution region.
+                # It also account for additional phase pi/2.
+                path_wkb_refraction13_2 = path + "wkb_refraction (v13-2)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction13_2, grid, type="wkb+refraction13-2")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root,\
+                    aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction13_2, i, lines, size / 2)
+                f13_2.write(str(i) + ' ' +
                          str(aver_error_l2) + ' ' +
                          str(aver_error_l2_one_root) + ' ' +
                          str(aver_error_l2_two_root) + ' ' +
@@ -204,31 +246,15 @@ if __name__ == "__main__":
                          str(aver_error_l1_one_root) + ' ' +
                          str(aver_error_l1_two_root) + ' ' +
                          str(aver_error_l1_no_root) + ' ' + '\n')
-            elif version == "v13":
-                # WKBr sums the electric field in the double solution region.
-                # It also account for additional phase pi/2.
-                path_wkb_refraction13 = path + "wkb_refraction (v13)-" + tail
-                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction13, grid, type="wkb+refraction13")
-                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root,\
-                    aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
-                    compare(pathsc_adda, path_wkb_refraction13, i, lines, size / 2)
-                f13.write(str(i) + ' ' +
-                         str(aver_error_l2) + ' ' +
-                         str(aver_error_l2_one_root) + ' ' +
-                         str(aver_error_l2_two_root) + ' ' +
-                         str(aver_error_l2_no_root) + ' ' +
-                         str(aver_error_l1) + ' ' +
-                         str(aver_error_l1_one_root) + ' ' +
-                         str(aver_error_l1_two_root) + ' ' +
-                         str(aver_error_l1_no_root) + ' ' + '\n')
+
         if version == "wkb":
             f0.close()
         elif version == "v1":
             f1.close()
         elif version == "v2":
             f2.close()
-        elif version == "v3":
-            f3.close()
+        elif version == "v7":
+            f7.close()
         elif version == "v4":
             f4.close()
         elif version == "v5":
@@ -239,6 +265,8 @@ if __name__ == "__main__":
             f12.close()
         elif version == "v13":
             f13.close()
+        elif version == "v13-2":
+            f13_2.close()
 
 
 

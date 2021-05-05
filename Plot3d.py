@@ -176,20 +176,24 @@ def plot3d_E(path, path2, R, m, lines, type, graph_title, component, section, v_
         Eyinew = np.empty(0)
         Ezinew = np.empty(0)
         for i in range(0, len(Exr)):
-            if y[i] >= 0 and z[i] >= 0:
-                y2, z2 = coordinates_in_meridional_plane(x[i], y[i], z[i], R)
-                cur_region = region(y2, z2, R, m, lines)
-                if cur_region == use_region:
-                    xnew = np.append(xnew, x[i])
-                    ynew = np.append(ynew, y[i])
-                    znew = np.append(znew, z[i])
-                    Enew = np.append(Enew, E[i])
-                    Exrnew = np.append(Exrnew, Exr[i])
-                    Eyrnew = np.append(Eyrnew, Eyr[i])
-                    Ezrnew = np.append(Ezrnew, Ezr[i])
-                    Exinew = np.append(Exinew, Exi[i])
-                    Eyinew = np.append(Eyinew, Eyi[i])
-                    Ezinew = np.append(Ezinew, Ezi[i])
+            # I only use the area on the right to display the map:
+            if x[i] < 0 and section == "y-section":
+                continue
+            elif y[i] < 0 and section == "x-section":
+                continue
+            y2, z2 = coordinates_in_meridional_plane(x[i] / R, y[i] / R, z[i] / R)
+            cur_region = region(y2, z2, m, lines)
+            if cur_region == use_region:
+                xnew = np.append(xnew, x[i])
+                ynew = np.append(ynew, y[i])
+                znew = np.append(znew, z[i])
+                Enew = np.append(Enew, E[i])
+                Exrnew = np.append(Exrnew, Exr[i])
+                Eyrnew = np.append(Eyrnew, Eyr[i])
+                Ezrnew = np.append(Ezrnew, Ezr[i])
+                Exinew = np.append(Exinew, Exi[i])
+                Eyinew = np.append(Eyinew, Eyi[i])
+                Ezinew = np.append(Ezinew, Ezi[i])
     else:
         xnew = x
         ynew = y
@@ -334,7 +338,8 @@ def plot3d(path, path2, section, graph_title, value_type):
 # version = v1, v2 ...
 # section = x-section, y-section.
 # type_exact - exact solution type.
-def diff_map(tail, version, section, type_exact, section_coordinate=0.3125):
+def diff_map(tail, version, section, type_exact, section_coordinate=0.3125, use_small_region=False,
+             use_my_range=True, min=-0.5, max=0.5):
     # Find the cross y-section:
     path1 = path + "wkb_refraction (" + version + ")-" + tail
     path1_section = path + "wkb_refraction (" + version + ")-" + section + "-" + tail
@@ -362,29 +367,34 @@ def diff_map(tail, version, section, type_exact, section_coordinate=0.3125):
              graph_title="",  # WKBv"+ str(version) +", both components
              component="both",
              section=section,
-             v_min=-2.5, v_max=0.5,
+             v_min=min, v_max=max,
              use_log=True,
-             use_small_region=False,
+             use_small_region=use_small_region,
              use_region="two_roots",
-             use_my_range=True)
+             use_my_range=use_my_range)
 
 
 if __name__ == "__main__":
-    size = 100  # 500
-    grid = 160  # 100
+    size = 1000  # 500
+    grid = 200  # 100
     R = size / 2
-    m = 1.1
-    m_im = 0 # 0.01
-    type = "bhfield" #"scattnlay" #
+    m = 1.3
+    m_im = 0  # 0.01
+    type = "scattnlay"  # "scattnlay"/"bhfield"
     section = "y-section"
-    section_coordinate = 0.3125 # 2.5252  # 0.3125
-    path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
+    section_coordinate = 0  # 2.5252  # 0.3125
+    use_my_range = True
+    min = -0.5
+    max = 0.5
+    tail = str(size) + "-" + str(m) + "-" + str(m_im) + "-" + str(grid) + ".dat"
+    #tail = str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
+    path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section (clear)/"
+    # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + "/"
-    # tail = str(size) + "-" + str(m) + "-" + str(m_im) + "-" + str(grid) + ".dat"
-    tail = str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
-    lines = BoundaryLines(m)
 
-    for version in ["Maps of error for WKBr v5"]:  # "Maps of error for WKBr v1"
+    lines = BoundaryLines(m)
+    # "Maps of error for WKBr v1"
+    for version in ["Maps of error for WKBr v7", "Maps of error for WKBr v13", "Maps of error for WKBr v13-2"]:
         if version == "WKB":
             # Найдём сечение x-section WKB:
             section_coordinate = 0.3125
@@ -415,6 +425,15 @@ if __name__ == "__main__":
             diff_map(tail, "v5", section, type, section_coordinate=section_coordinate)
         elif version == "Maps of error for WKBr v12":
             diff_map(tail, "v12", section, type, section_coordinate=section_coordinate)
+        elif version == "Maps of error for WKBr v7":
+            diff_map(tail, "v7", section, type, section_coordinate=section_coordinate, use_small_region=True,
+                     use_my_range=use_my_range, min=min, max=max)
+        elif version == "Maps of error for WKBr v13":
+            diff_map(tail, "v13", section, type, section_coordinate=section_coordinate, use_small_region=True,
+                     use_my_range=use_my_range, min=min, max=max)
+        elif version == "Maps of error for WKBr v13-2":
+            diff_map(tail, "v13-2", section, type, section_coordinate=section_coordinate, use_small_region=True,
+                     use_my_range=use_my_range, min=min, max=max)
         elif version == "Maps of error for WKBr v2, WKBr v3, exact":
             # Find the cross y-section WKBr v2:
             path2 = path + "wkb_refraction (v2)-" + tail
@@ -443,7 +462,7 @@ if __name__ == "__main__":
                      graph_title="",  # WKBv"+ str(version) +", both components
                      component="both",
                      section="y-section",
-                     v_min=0.5, v_max=-2.5,
+                     v_min=0.5, v_max=-0.6,
                      use_log=True,
                      use_small_region=False,
                      use_region="two_roots",
