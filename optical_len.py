@@ -50,8 +50,10 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                         info = "no_calculation"
                     else:
                         print("Error in optical_len() function! In the first option.")
-                elif type_ == "wkb+refraction15" or type_ == "wkb+refraction15-1" or type_ == "wkb+refraction15-2":
+                elif type_ == "wkb+refraction15" or type_ == "wkb+refraction15-1" or type_ == "wkb+refraction15-2" \
+                        or type_ == "wkb+refraction16" or type_ == "wkb+refraction16-1" or type_ == "wkb+refraction16-2":
                     # The first option: R1 - use one solution. R2 - sum. R0 - use zero solution.
+                    # The 3-rd option: R1 - one solution. R2 - rotation, transmission coefficients, sum. R0 - zero.
                     cur_region = region(y2, z2, m, lines)
                     if cur_region == "one_root" or cur_region == "two_roots":
                         info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, cur_region)

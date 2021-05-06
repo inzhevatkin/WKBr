@@ -14,3 +14,9 @@ and rotation.
 R1 - use one solution. R2 - sum. R0 - use zero solution.
 +   **"wkb+refraction15-1"**: use the phase pi/2.
 +   **"wkb+refraction15-2"**: use the phase -pi/2.
+
+**"wkb+refraction16"**: (v.3)  
+R1 - use one solution. R2 - sum, rotation, transmission coefficients. R0
+\- zero.
++   **"wkb+refraction16-1"**: use the phase pi/2.
++   **"wkb+refraction16-2"**: use the phase -pi/2.

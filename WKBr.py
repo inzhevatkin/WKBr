@@ -273,6 +273,51 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                                                                               ezr_new1, ezr_new2, ezi_new1, ezi_new2)
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 num_two_roots += 1
+        elif type == "wkb+refraction16" or type == "wkb+refraction16-1" or type == "wkb+refraction16-2":
+            # WKBr version 3.
+            # R1 - one solution. R0 - zero. R2 - rotation, transmission coefficients, sum.
+            # "wkb+refraction16-1": here I also take into account the phase pi/2.
+            # "wkb+refraction16-2": here I also take into account the phase -pi/2.
+            if cur_region == "one_root":
+                arg = find_arg(k, radius, N1, l1, l2)
+                attenuation1 = find_attenuation(k, l2, K1, cos_t1, radius)
+                exr_new = cos(arg) * attenuation1
+                exi_new = sin(arg) * attenuation1
+                exr_new, exi_new, eyr_new, eyi_new = \
+                    apply_transmission_coefficient(exr_new, exi_new, t_per1, t_par1, rotation_angle)
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
+                    apply_rotation_electric_field_vector(exr_new, exi_new, da1)
+                e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
+                num_one_root += 1
+            elif cur_region == "two_roots":
+                attenuation1 = find_attenuation(k, l2, K1, cos_t1, radius)
+                attenuation2 = find_attenuation(k, l2_2, K2, cos_t2, radius)
+                arg1 = find_arg(k, radius, N1, l1, l2)
+                arg2 = find_arg(k, radius, N2, l1_2, l2_2)
+                if type == "wkb+refraction16-1":
+                    arg2 += pi / 2
+                elif type == "wkb+refraction16-2":
+                    arg2 -= pi / 2
+                exr_new1 = cos(arg1) * attenuation1
+                exr_new2 = cos(arg2) * attenuation2
+                exi_new1 = sin(arg1) * attenuation1
+                exi_new2 = sin(arg2) * attenuation2
+                exr_new1, exi_new1, eyr_new1, eyi_new1 = \
+                    apply_transmission_coefficient(exr_new1, exi_new1, t_per1, t_par1, rotation_angle)
+                exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
+                    apply_rotation_electric_field_vector(exr_new1, exi_new1, da1)
+                exr_new2, exi_new2, eyr_new2, eyi_new2 = \
+                    apply_transmission_coefficient(exr_new2, exi_new2, t_per2, t_par2, rotation_angle)
+                exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
+                    apply_rotation_electric_field_vector(exr_new2, exi_new2, da2)
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = sum_ef(exr_new1, exr_new2, exi_new1, exi_new2,
+                                                                              eyr_new1, eyr_new2, eyi_new1, eyi_new2,
+                                                                              ezr_new1, ezr_new2, ezi_new1, ezi_new2)
+                e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
+                num_two_roots += 1
+            elif cur_region == "no_root":
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, e = 0, 0, 0, 0, 0, 0, 0
+                num_no_roots += 1
         elif type == "wkb+refraction8":
             # WKBr version 4.
             if cur_region == "one_root":

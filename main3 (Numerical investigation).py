@@ -14,7 +14,7 @@ path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", g
 # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section (clear)/"
 
 if __name__ == "__main__":
-    for version in ["v15"]: # "wkb", "v1", "v2", "v5", "v12", "v7", "v13", "v13-2", "v15"
+    for version in ["v16"]: # "wkb", "v1", "v2", "v5", "v12", "v7", "v13", "v13-2", "v15", "v16"
         if version == "wkb":
             f0 = open(path + "dE-sc-wkb" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f0.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
@@ -58,6 +58,10 @@ if __name__ == "__main__":
         elif version == "v15":
             f15 = open(path + "dE-sc-wkbr (v15)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f15.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
+                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
+        elif version == "v16":
+            f16 = open(path + "dE-sc-wkbr (v16)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
+            f16.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                       "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         for i in m:
             print("Current size = ", size)
@@ -267,6 +271,23 @@ if __name__ == "__main__":
                          str(aver_error_l1_one_root) + ' ' +
                          str(aver_error_l1_two_root) + ' ' +
                          str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "v16":
+                # Version 3.
+                # R1 - use one solution. R2 - sum, rotation, transmission coefficients. R0 - zero.
+                path_wkb_refraction16 = path + "wkb_refraction (v16)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction16, grid, type="wkb+refraction16")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
+                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction16, i, lines, size / 2)
+                f16.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
 
         if version == "wkb":
             f0.close()
@@ -289,6 +310,8 @@ if __name__ == "__main__":
         elif version == "v13-2":
             f13_2.close()
         elif version == "v15":
+            f15.close()
+        elif version == "v16":
             f15.close()
 
 
