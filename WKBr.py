@@ -214,6 +214,60 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             elif cur_region == "no_root":
                 exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, e = 0, 0, 0, 0, 0, 0, 0
                 num_no_roots += 1
+        elif type == "wkb+refraction18":
+            # WKBr version 5.
+            # R1 - "wkb+refraction12" without Fresnel transmission coefficients
+            # R2 - "wkb+refraction17"  without Fresnel transmission coefficients
+            # R0 - zero.
+            if cur_region == "one_root":
+                arg = find_arg(k, radius, N1, l1, l2)
+                attenuation1 = find_attenuation(k, l2, K1, cos_t1, radius)
+                exr_new = cos(arg) * attenuation1
+                exi_new = sin(arg) * attenuation1
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
+                    apply_rotation_electric_field_vector(exr_new, exi_new, da1)
+                e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
+                ref_ang = acos(cos_t1)
+                inc_ang = asin(m * sin(ref_ang))
+                K = find_convergence_factor(1, m, l2, inc_ang, ref_ang)
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
+                    apply_convergence_factor(exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, K)
+                e *= K
+                num_one_root += 1
+            elif cur_region == "two_roots":
+                attenuation1 = find_attenuation(k, l2, K1, cos_t1, radius)
+                attenuation2 = find_attenuation(k, l2_2, K2, cos_t2, radius)
+                arg1 = find_arg(k, radius, N1, l1, l2)
+                arg2 = find_arg(k, radius, N2, l1_2, l2_2)
+                exr_new1 = cos(arg1) * attenuation1
+                exr_new2 = cos(arg2) * attenuation2
+                exi_new1 = sin(arg1) * attenuation1
+                exi_new2 = sin(arg2) * attenuation2
+
+                exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
+                    apply_rotation_electric_field_vector(exr_new1, exi_new1, da1)
+                ref_ang = acos(cos_t1)
+                inc_ang = asin(m * sin(ref_ang))
+                K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+                exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
+                    apply_convergence_factor(exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1, K)
+
+                exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
+                    apply_rotation_electric_field_vector(exr_new2, exi_new2, da2)
+                ref_ang = acos(cos_t2)
+                inc_ang = asin(m * sin(ref_ang))
+                K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+                exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
+                    apply_convergence_factor(exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2, K)
+
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = sum_ef(exr_new1, exr_new2, exi_new1, exi_new2,
+                                                                              eyr_new1, eyr_new2, eyi_new1, eyi_new2,
+                                                                              ezr_new1, ezr_new2, ezi_new1, ezi_new2)
+                e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
+                num_two_roots += 1
+            elif cur_region == "no_root":
+                exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, e = 0, 0, 0, 0, 0, 0, 0
+                num_no_roots += 1
         elif type == "wkb+refraction15" or type == "wkb+refraction15-1" or type == "wkb+refraction15-2":
             # WKBr version 1.
             # WKBr sums the electric field in the double solution region.
