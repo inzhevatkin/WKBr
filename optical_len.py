@@ -52,7 +52,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                         print("Error in optical_len() function! In the first option.")
                 elif type_ == "wkb+refraction15" or type_ == "wkb+refraction15-1" or type_ == "wkb+refraction15-2" \
                         or type_ == "wkb+refraction16" or type_ == "wkb+refraction16-1" or type_ == "wkb+refraction16-2" \
-                        or type == "wkb+refraction17" or type == "wkb+refraction17-1" or type == "wkb+refraction17-2":
+                        or type_ == "wkb+refraction17" or type_ == "wkb+refraction17-1" or type_ == "wkb+refraction17-2":
                     # The first option: R1 - use one solution. R2 - sum. R0 - use zero solution.
                     # The 3-rd option: R1 - one solution. R2 - rotation, transmission coefficients, sum. R0 - zero.
                     # The 4-rd option: R1 - one solution. R2 - rotation, transmission coefficients, convergence factor, sum. R0 - zero.
@@ -62,7 +62,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                     elif cur_region == "no_root":
                         info = "no_calculation"
                     else:
-                        print("Error in optical_len() function! In wkb+refraction15.")
+                        print("Error in optical_len() function! In wkb+refraction15(16,17).")
                 elif type_ == "wkb+refraction2" or type_ == "wkb+refraction7" or type_ == "wkb+refraction13" \
                         or type_ == "wkb+refraction13-2":
                     # The second option: in the 1,2 solution region, we find one root and two roots respectively.
