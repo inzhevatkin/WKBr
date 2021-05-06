@@ -63,6 +63,18 @@ if __name__ == "__main__":
             f16 = open(path + "dE-sc-wkbr (v16)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f16.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                       "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
+        elif version == "v17":
+            f17 = open(path + "dE-sc-wkbr (v17)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
+            f17.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
+                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
+        elif version == "v17-1":
+            f17_1 = open(path + "dE-sc-wkbr (v17-1)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
+            f17_1.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
+                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
+        elif version == "v17-2":
+            f17_2 = open(path + "dE-sc-wkbr (v17-2)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
+            f17_2.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
+                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         for i in m:
             print("Current size = ", size)
             print("Current grid = ", grid)
@@ -288,6 +300,62 @@ if __name__ == "__main__":
                          str(aver_error_l1_one_root) + ' ' +
                          str(aver_error_l1_two_root) + ' ' +
                          str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "v17":
+                # Version 4.
+                # R1 - use one solution. R2 - rotation, transmission coefficients,
+                # convergence factor, sum. R0 - zero.
+                path_wkb_refraction17 = path + "wkb_refraction (v17)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction17, grid, type="wkb+refraction17")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
+                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction17, i, lines, size / 2)
+                f17.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "v17-1":
+                # Version 4.
+                # R1 - use one solution. R2 - rotation, transmission coefficients,
+                # convergence factor, sum. R0 - zero.
+                # phase: pi/2
+                path_wkb_refraction17_1 = path + "wkb_refraction (v17-1)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction17_1, grid, type="wkb+refraction17-1")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
+                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction17_1, i, lines, size / 2)
+                f17_1.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "v17-2":
+                # Version 4.
+                # R1 - use one solution. R2 - rotation, transmission coefficients,
+                # convergence factor, sum. R0 - zero.
+                # phase: -pi/2
+                path_wkb_refraction17_2 = path + "wkb_refraction (v17-2)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction17_2, grid, type="wkb+refraction17-2")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
+                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction17_2, i, lines, size / 2)
+                f17_2.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
 
         if version == "wkb":
             f0.close()
@@ -312,7 +380,13 @@ if __name__ == "__main__":
         elif version == "v15":
             f15.close()
         elif version == "v16":
-            f15.close()
+            f16.close()
+        elif version == "v17":
+            f17.close()
+        elif version == "v17-1":
+            f17_1.close()
+        elif version == "v17-2":
+            f17_2.close()
 
 
 

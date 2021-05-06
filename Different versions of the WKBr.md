@@ -20,3 +20,9 @@ R1 - use one solution. R2 - sum, rotation, transmission coefficients. R0
 \- zero.
 +   **"wkb+refraction16-1"**: use the phase pi/2.
 +   **"wkb+refraction16-2"**: use the phase -pi/2.
+
+**"wkb+refraction17"**: (v.4)  
+R1 - use one solution. R2 - rotation, transmission coefficients,
+convergence factor, sum. R0 - zero.
++   **"wkb+refraction17-1"**: use the phase pi/2.
++   **"wkb+refraction17-2"**: use the phase -pi/2.
