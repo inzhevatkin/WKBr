@@ -28,11 +28,11 @@ def safe_div(x, y):
 # See details: Graeme L. James "Geometrical Theory of Diffraction for Electromagnetic Waves" (1986).
 # l - optical path in the particle
 def find_convergence_factor(radius, m, l, inc_angle, refracted_angle):
-    C = np.array([[1/radius, 0], [0, 1/radius]])  # surface curvature matrix
+    C = np.array([[1 / radius, 0], [0, 1 / radius]])  # surface curvature matrix
     # Qi = np.array([[0, 0], [0, 0]])  # incident front curvature matrix
     # Ki = np.array([[1, 0], [0, -cos(inc_angle)]])  # matrix transverse coordinates
     RevKt = np.array([[1, 0], [0, -1 / cos(refracted_angle)]])
-    Gi = C*cos(inc_angle)  # + Ki*Qi*Ki
+    Gi = C * cos(inc_angle)  # + Ki*Qi*Ki
     Gt = Gi / m
     Qt = RevKt.dot(Gt - C * cos(refracted_angle)).dot(RevKt)
     Q11 = Qt[0][0]
@@ -120,15 +120,15 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         z_ = - (1 - x_cur ** 2 - y_cur ** 2) ** 0.5
         l1, l2, l1_2, l2_2, type2, cur_region, t_per1, t_per2, t_par1, t_par2, da1, da2, rotation_angle, \
         cos_t1, cos_t2, N1, K1, N2, K2 = optical_len(x_cur,
-                                                      y_cur,
-                                                      z_cur,
-                                                      z_,
-                                                      m,
-                                                      mi,
-                                                      type,
-                                                      lines,
-                                                      k,
-                                                      solution=solution_method)
+                                                     y_cur,
+                                                     z_cur,
+                                                     z_,
+                                                     m,
+                                                     mi,
+                                                     type,
+                                                     lines,
+                                                     k,
+                                                     solution=solution_method)
 
         if type == "analytic" or type == "discrete":
             arg = find_arg(k, radius, N1, l1, l2)
@@ -327,8 +327,8 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                     ref_ang = acos(cos_t1)
                     inc_ang = asin(m * sin(ref_ang))
                     K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
-                    apply_convergence_factor(exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1, K)
-
+                    exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
+                        apply_convergence_factor(exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1, K)
                 exr_new2, exi_new2, eyr_new2, eyi_new2 = \
                     apply_transmission_coefficient(exr_new2, exi_new2, t_per2, t_par2, rotation_angle)
                 exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
@@ -337,7 +337,8 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                     ref_ang = acos(cos_t2)
                     inc_ang = asin(m * sin(ref_ang))
                     K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
-                    apply_convergence_factor(exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2, K)
+                    exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
+                        apply_convergence_factor(exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2, K)
 
                 exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = sum_ef(exr_new1, exr_new2, exi_new1, exi_new2,
                                                                               eyr_new1, eyr_new2, eyi_new1, eyi_new2,
