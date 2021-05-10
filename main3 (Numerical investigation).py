@@ -4,17 +4,17 @@ import os
 
 # This file main3 (Numerical investigation).py  is needed to find the average error for a section / particle.
 
-size = 100
-grid = 160
-type = "bhfield"  # "bhfield" #"scattnlay"  # "WKB from ADDA" #  #  scattnlay "bhfield" #
-m = [1.01, 1.05, 1.1, 1.2, 1.3]  # 1.01, 1.05, 1.1, 1.2, 1.3
+size = 1000
+grid = 200
+type = "scattnlay"  # "bhfield" #"scattnlay"  # "WKB from ADDA" #  #  scattnlay "bhfield" #
+m = [1.05]  # 1.01, 1.05, 1.1, 1.2, 1.3
 m_im = 0  # 0.01
 # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section/"
-path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
-# path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section (clear)/"
+# path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
+path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section (clear)/"
 
 if __name__ == "__main__":
-    for version in ["v18"]: # "wkb", "v1", "v2", "v5", "v12", "v7", "v13", "v13-2", "v15", "v16", "v17", "v18"
+    for version in ["v15", "v7", "v16", "v17"]: # "wkb", "v1", "v2", "v5", "v12", "v7", "v13", "v13-2", "v15", "v16", "v17", "v18"
         if version == "wkb":
             f0 = open(path + "dE-sc-wkb" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f0.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +

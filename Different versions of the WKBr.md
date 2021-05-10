@@ -4,10 +4,9 @@ R1, R2 - use one solution. R0 - use zero solution.
   + **"wkb+refraction14"**: Fresnel transmission coefficients. (v.3)
   + **"wkb+refraction12"**: convergence factor. (v.4)
 
-
 **"wkb+refraction7"**: (v.2)  
-R1 - use one solution. R0 - use WKB. R2 - use sum of the electric field
-and rotation.
+R1 - use one solution. R2 - use sum of the electric field, rotation. R0
+\- use WKB.
   + **"wkb+refraction13"**: use the phase pi/2.
   + **"wkb+refraction13-2"**: use the phase -pi/2.
 

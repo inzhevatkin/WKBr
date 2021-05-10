@@ -68,7 +68,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         print("WKBr calculation: " + type)
     # Find electric field WKB:
     f = open(path, 'w')
-    f.write('x y z |E|^2 Ex.r Ex.i Ey.r Ey.i Ez.r Ez.i \n')
+    f.write('x y z |E| Ex.r Ex.i Ey.r Ey.i Ez.r Ez.i \n')
     num_one_root = 0
     num_two_roots = 0
     num_no_roots = 0

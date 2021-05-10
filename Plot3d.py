@@ -114,7 +114,8 @@ def find_difference(path1, path2, path3, type):
         dEzi = Ezi1[i] - Ezi2[i]
         dE = (dExr ** 2 + dExi ** 2 + dEyr ** 2 + dEyi ** 2 + dEzr ** 2 + dEzi ** 2) ** 0.5
         line = str(x[i]) + " " + str(y[i]) + " " + str(z[i]) + " " + str(dE) + " " + \
-               str(dExr) + " " + str(dExi) + " " + str(dEyr) + " " + str(dEyi) + " " + str(dEzr) + " " +str(dEzi)+ " \n"
+               str(dExr) + " " + str(dExi) + " " + str(dEyr) + " " + str(dEyi) + " " + str(dEzr) + " " + str(
+            dEzi) + " \n"
         f3.write(line)
     f3.close()
 
@@ -224,7 +225,8 @@ def plot3d_E(path, path2, R, m, lines, type, graph_title, component, section, v_
                 if isnan(Exrnew[i]) or isnan(Exinew[i]):
                     Enew[i] = 0
                 else:
-                    Enew[i] = Exrnew[i] ** 2 + Exinew[i] ** 2 + Eyrnew[i] ** 2 + Eyinew[i] ** 2 + Ezrnew[i] ** 2 + Ezinew[i] ** 2
+                    Enew[i] = Exrnew[i] ** 2 + Exinew[i] ** 2 + Eyrnew[i] ** 2 + Eyinew[i] ** 2 + Ezrnew[i] ** 2 + \
+                              Ezinew[i] ** 2
                     Enew[i] = Enew[i] ** 0.5
                     Enew[i] = math.log10(Enew[i])
     elif use_log is False:
@@ -245,7 +247,8 @@ def plot3d_E(path, path2, R, m, lines, type, graph_title, component, section, v_
                 if isnan(Exrnew[i]) or isnan(Exinew[i]):
                     Enew[i] = 0
                 else:
-                    Enew[i] = Exrnew[i] ** 2 + Exinew[i] ** 2 + Eyrnew[i] ** 2 + Eyinew[i] ** 2 + Ezrnew[i] ** 2 + Ezinew[i] ** 2
+                    Enew[i] = Exrnew[i] ** 2 + Exinew[i] ** 2 + Eyrnew[i] ** 2 + Eyinew[i] ** 2 + Ezrnew[i] ** 2 + \
+                              Ezinew[i] ** 2
                     Enew[i] = Enew[i] ** 0.5
                     print(Enew[i])
 
@@ -335,10 +338,45 @@ def plot3d(path, path2, section, graph_title, value_type):
     plt.close()
 
 
+# The function selects points from the specified region.
+def select_region(path_in, path_out, my_region):
+    print("select_region() started...")
+    f_out = open(path_out, 'w')
+    f_out.write("x y z E Exr Exi Eyr Eyi Ezr Ezi \n")
+    # assume that type "adda"
+    data = np.loadtxt(path_in, dtype=np.float32, delimiter=" ", skiprows=1, usecols=range(10))
+    x = data[:, 0]
+    y = data[:, 1]
+    z = data[:, 2]
+    E = data[:, 3]
+    Exr = data[:, 4]
+    Exi = data[:, 5]
+    Eyr = data[:, 6]
+    Eyi = data[:, 7]
+    Ezr = data[:, 8]
+    Ezi = data[:, 9]
+    L = len(x)
+    for i in range(0, L):
+        # I only use the area on the right to display the map:
+        if x[i] < 0 and section == "y-section":
+            continue
+        elif y[i] < 0 and section == "x-section":
+            continue
+        y2, z2 = coordinates_in_meridional_plane(x[i] / R, y[i] / R, z[i] / R)
+        cur_region = region(y2, z2, m, lines)
+        if cur_region == my_region:
+            f_out.write(str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + str(E[i]) + ' ' +
+                        str(Exr[i]) + ' ' + str(Exi[i]) + ' ' +
+                        str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' +
+                        str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n')
+    f_out.close()
+
+
 # version = v1, v2 ...
 # section = x-section, y-section.
 # type_exact - exact solution type.
-def diff_map(tail, version, section, type_exact, section_coordinate=0.3125, use_small_region=False,
+def diff_map(tail, version, section, type_exact, section_coordinate=0.3125,
+             use_small_region=False, region="two_roots",
              use_my_range=True, min=-0.5, max=0.5):
     # Find the cross y-section:
     path1 = path + "wkb_refraction (" + version + ")-" + tail
@@ -370,31 +408,61 @@ def diff_map(tail, version, section, type_exact, section_coordinate=0.3125, use_
              v_min=min, v_max=max,
              use_log=True,
              use_small_region=use_small_region,
-             use_region="two_roots",
+             use_region=region,
              use_my_range=use_my_range)
+
+
+def ef_map(path1, path_out):
+    # Find the cross section:
+    # path1 = path + "wkb_refraction (" + version + ")-" + tail
+    path1_section = path + "wkb_refraction (" + version + ")-" + section + "-" + tail
+    prepare_data(path1, path1_section, "adda", section, section_coordinate)
+    # Select region:
+    path_in = path + "wkb_refraction (" + version + ")-" + section + "-" + tail
+    select_region(path_in, path_out, my_region)
+    # Building the map
+    '''
+    plot3d_E(path_out,
+             path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-"
+                + str(size) + "-" + str(m) + "-" + str(grid) + ".png",
+             R,
+             m,
+             lines,
+             type="adda",
+             graph_title="",  # WKBv"+ str(version) +", both components
+             component="both",
+             section=section,
+             v_min=min, v_max=max,
+             use_log=True,
+             use_small_region=False,
+             use_region=False,
+             use_my_range=False)
+    '''
 
 
 if __name__ == "__main__":
     size = 1000  # 500
     grid = 200  # 100
     R = size / 2
-    m = 1.3
+    m = 1.05
     m_im = 0  # 0.01
     type = "scattnlay"  # "scattnlay"/"bhfield"
     section = "y-section"
     section_coordinate = 0  # 2.5252  # 0.3125
-    use_my_range = True
+    use_my_range = False
     min = -0.5
     max = 0.5
-    tail = str(size) + "-" + str(m) + "-" + str(m_im) + "-" + str(grid) + ".dat"
-    #tail = str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
+    use_small_region_flag = True
+    my_region = "two_roots"
+    # tail = str(size) + "-" + str(m) + "-" + str(m_im) + "-" + str(grid) + ".dat"
+    tail = str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
     path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section (clear)/"
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + "/"
 
     lines = BoundaryLines(m)
-    # "Maps of error for WKBr v1"
-    for version in ["Maps of error for WKBr v7", "Maps of error for WKBr v13", "Maps of error for WKBr v13-2"]:
+    for version in ["Map of EF for WKBr v4"]:
+        print(version)
         if version == "WKB":
             # Найдём сечение x-section WKB:
             section_coordinate = 0.3125
@@ -535,3 +603,36 @@ if __name__ == "__main__":
                      use_small_region=False,
                      use_region="no_root",
                      use_my_range=False)
+        elif version == "Maps of error for WKBr v2 in R2":
+            diff_map(tail, "v2", section, type, section_coordinate=section_coordinate,
+                     use_small_region=use_small_region_flag, region=my_region,
+                     use_my_range=use_my_range, min=min, max=max)
+        elif version == "Maps of error for WKBr v12 in R2":
+            diff_map(tail, "v12", section, type, section_coordinate=section_coordinate,
+                     use_small_region=use_small_region_flag, region=my_region,
+                     use_my_range=use_my_range, min=min, max=max)
+        elif version == "Map of EF for WKBr v1":
+            version = "v15"
+            path1 = path + "wkb_refraction (" + version + ")-" + tail
+            path_out = path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-" + tail
+            ef_map(path1, path_out)
+        elif version == "Map of EF for WKBr v2":
+            version = "v7"
+            path1 = path + "wkb_refraction (" + version + ")-" + tail
+            path_out = path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-" + tail
+            ef_map(path1, path_out)
+        elif version == "Map of EF for WKBr v3":
+            version = "v16"
+            path1 = path + "wkb_refraction (" + version + ")-" + tail
+            path_out = path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-" + tail
+            ef_map(path1, path_out)
+        elif version == "Map of EF for WKBr v4":
+            version = "v17"
+            path1 = path + "wkb_refraction (" + version + ")-" + tail
+            path_out = path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-" + tail
+            ef_map(path1, path_out)
+        elif version == "Map of exact":
+            path1 = path + str(type) + "-y-section-" + tail
+            path2 = path + str(type) + "-y-section-" + my_region + "-" + tail
+            ef_map(path1, path2)
+
