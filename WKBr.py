@@ -43,6 +43,7 @@ def find_convergence_factor(radius, m, l, inc_angle, refracted_angle):
     ro1 = safe_div(2, den1)
     ro2 = safe_div(2, den2)
     K = safe_div(ro1 * ro2, (ro1 + l) * (ro2 + l))
+    K = abs(K)
     K = K ** 0.5
     return K
 
@@ -202,7 +203,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 ref_ang = acos(cos_t1)
                 inc_ang = asin(m * sin(ref_ang))
-                K = find_convergence_factor(1, m, l2, inc_ang, ref_ang)
+                K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
                 exr_new *= K
                 exi_new *= K
                 eyr_new *= K
@@ -229,7 +230,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
                 ref_ang = acos(cos_t1)
                 inc_ang = asin(m * sin(ref_ang))
-                K = find_convergence_factor(1, m, l2, inc_ang, ref_ang)
+                K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
                 exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
                     apply_convergence_factor(exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, K)
                 e *= K
@@ -252,7 +253,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                     apply_rotation_electric_field_vector(exr_new1, exi_new1, da1)
                 ref_ang = acos(cos_t1)
                 inc_ang = asin(m * sin(ref_ang))
-                K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+                K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
                 exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
                     apply_convergence_factor(exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1, K)
 
@@ -260,7 +261,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                     apply_rotation_electric_field_vector(exr_new2, exi_new2, da2)
                 ref_ang = acos(cos_t2)
                 inc_ang = asin(m * sin(ref_ang))
-                K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+                K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
                 exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
                     apply_convergence_factor(exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2, K)
 
@@ -377,6 +378,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 exr_new2 = cos(arg2) * attenuation2
                 exi_new1 = sin(arg1) * attenuation1
                 exi_new2 = sin(arg2) * attenuation2
+
                 exr_new1, exi_new1, eyr_new1, eyi_new1 = \
                     apply_transmission_coefficient(exr_new1, exi_new1, t_per1, t_par1, rotation_angle)
                 exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
@@ -384,9 +386,10 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 if type == "wkb+refraction17" or type == "wkb+refraction17-1" or type == "wkb+refraction17-2":
                     ref_ang = acos(cos_t1)
                     inc_ang = asin(m * sin(ref_ang))
-                    K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+                    K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
                     exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
                         apply_convergence_factor(exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1, K)
+
                 exr_new2, exi_new2, eyr_new2, eyi_new2 = \
                     apply_transmission_coefficient(exr_new2, exi_new2, t_per2, t_par2, rotation_angle)
                 exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
@@ -394,7 +397,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 if type == "wkb+refraction17" or type == "wkb+refraction17-1" or type == "wkb+refraction17-2":
                     ref_ang = acos(cos_t2)
                     inc_ang = asin(m * sin(ref_ang))
-                    K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+                    K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
                     exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
                         apply_convergence_factor(exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2, K)
 
@@ -512,7 +515,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             # TODO: Create a ray class and store the angle of incidence and refraction in it.
             ref_ang = acos(cos_t1)
             inc_ang = asin(m * sin(ref_ang))
-            K = find_convergence_factor(radius, m, l2, inc_ang, ref_ang)
+            K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
             exr_new *= K
             exi_new *= K
             eyr_new *= K
