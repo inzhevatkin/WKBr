@@ -214,7 +214,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
             elif cur_region == "no_root":
                 exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, e = 0, 0, 0, 0, 0, 0, 0
                 num_no_roots += 1
-        elif type == "wkb+refraction18":
+        elif type == "wkb+refraction18" or type == "wkb+refraction18-1" or type == "wkb+refraction18-2":
             # WKBr version 5.
             # R1 - "wkb+refraction12" without Fresnel transmission coefficients
             # R2 - "wkb+refraction17"  without Fresnel transmission coefficients
@@ -239,6 +239,10 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 attenuation2 = find_attenuation(k, l2_2, K2, cos_t2, radius)
                 arg1 = find_arg(k, radius, N1, l1, l2)
                 arg2 = find_arg(k, radius, N2, l1_2, l2_2)
+                if type == "wkb+refraction18-1":
+                    arg2 += pi / 2
+                elif type == "wkb+refraction18-2":
+                    arg2 -= pi / 2
                 exr_new1 = cos(arg1) * attenuation1
                 exr_new2 = cos(arg2) * attenuation2
                 exi_new1 = sin(arg1) * attenuation1

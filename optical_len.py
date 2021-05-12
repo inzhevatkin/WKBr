@@ -53,7 +53,7 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                 elif type_ == "wkb+refraction15" or type_ == "wkb+refraction15-1" or type_ == "wkb+refraction15-2" \
                         or type_ == "wkb+refraction16" or type_ == "wkb+refraction16-1" or type_ == "wkb+refraction16-2" \
                         or type_ == "wkb+refraction17" or type_ == "wkb+refraction17-1" or type_ == "wkb+refraction17-2" \
-                        or type_ == "wkb+refraction18":
+                        or type_ == "wkb+refraction18" or type_ == "wkb+refraction18-1" or type_ == "wkb+refraction18-2":
                     # The 1-st option: R1 - use one solution. R2 - sum. R0 - use zero solution.
                     # The 3-rd option: R1 - one solution. R2 - rotation, transmission coefficients, sum. R0 - zero.
                     # The 4-rd option: R1 - one solution. R2 - rotation, transmission coefficients, convergence factor, sum. R0 - zero.
