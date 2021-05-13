@@ -188,11 +188,15 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 num_no_roots += 1
             else:
                 print("Error in find_wkb_ef() function, in elif type == wkb+refraction9")
-        elif type == "wkb+refraction12":
+        elif type == "wkb+refraction12" or type == "wkb+refraction12-1" or type == "wkb+refraction12-2":
             # WKBr version 4.
             # Everything is the same as in WKBr v.2, but here we account for "convergence factor", Fresnel coefficient.
             if cur_region == "one_root" or cur_region == "two_roots":
                 arg = find_arg(k, radius, N1, l1, l2)
+                if type == "wkb+refraction12-1":
+                    arg += pi / 2
+                elif type == "wkb+refraction12-2":
+                    arg -= pi / 2
                 attenuation1 = find_attenuation(k, l2, K1, cos_t1, radius)
                 exr_new = cos(arg) * attenuation1
                 exi_new = sin(arg) * attenuation1
