@@ -39,7 +39,8 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                     else:
                         print("Error in optical_len() function! In the first option.")
                 elif type_ == "wkb+refraction" or type_ == "wkb+refraction6" or type_ == "wkb+refraction14" \
-                        or type_ == "wkb+refraction12" or type_ == "wkb+refraction19":
+                        or type_ == "wkb+refraction12" or type_ == "wkb+refraction19"\
+                        or type_ == "simple_wkbr":
                     # The first option: in the 1,2 solution region, we find only one root.
                     # In the 0 solution we use zero.
                     cur_region = region(y2, z2, m, lines)
@@ -53,7 +54,8 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                 elif type_ == "wkb+refraction15" or type_ == "wkb+refraction15-1" or type_ == "wkb+refraction15-2" \
                         or type_ == "wkb+refraction16" or type_ == "wkb+refraction16-1" or type_ == "wkb+refraction16-2" \
                         or type_ == "wkb+refraction17" or type_ == "wkb+refraction17-1" or type_ == "wkb+refraction17-2" \
-                        or type_ == "wkb+refraction18" or type_ == "wkb+refraction18-1" or type_ == "wkb+refraction18-2":
+                        or type_ == "wkb+refraction18" or type_ == "wkb+refraction18-1" or type_ == "wkb+refraction18-2" \
+                        or type_ == "complex_wkbr":
                     # The 1-st option: R1 - use one solution. R2 - sum. R0 - use zero solution.
                     # The 3-rd option: R1 - one solution. R2 - rotation, transmission coefficients, sum. R0 - zero.
                     # The 4-rd option: R1 - one solution. R2 - rotation, transmission coefficients, convergence factor, sum. R0 - zero.

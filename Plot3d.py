@@ -442,7 +442,7 @@ def ef_map(path1, path_out):
 
 if __name__ == "__main__":
     size = 1000  # 500
-    grid = 500  # 100
+    grid = 1000  # 100
     R = size / 2
     m = 1.1
     m_im = 0  # 0.01
@@ -453,15 +453,14 @@ if __name__ == "__main__":
     min = -0.5
     max = 0.5
     use_small_region_flag = True
-    my_region = "two_roots"
+    my_region = "no_root"
     # tail = str(size) + "-" + str(m) + "-" + str(m_im) + "-" + str(grid) + ".dat"
     tail = str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
     path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section (clear)/"
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + "/"
-
     lines = BoundaryLines(m)
-    for version in ["Map of EF for WKBr v5", "Map of EF for WKBr v5-1", "Map of EF for WKBr v5-2"]:
+    for version in ["Map of exact"]:
         print(version)
         if version == "WKB":
             # Найдём сечение x-section WKB:
@@ -611,6 +610,16 @@ if __name__ == "__main__":
             diff_map(tail, "v12", section, type, section_coordinate=section_coordinate,
                      use_small_region=use_small_region_flag, region=my_region,
                      use_my_range=use_my_range, min=min, max=max)
+        elif version == "Map of EF for WKBr v2 (one ray)":
+            version = "v2"
+            path1 = path + "wkb_refraction (" + version + ")-" + tail
+            path_out = path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-" + tail
+            ef_map(path1, path_out)
+        elif version == "Map of EF for WKBr v4 (one ray)":
+            version = "v12"
+            path1 = path + "wkb_refraction (" + version + ")-" + tail
+            path_out = path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-" + tail
+            ef_map(path1, path_out)
         elif version == "Map of EF for WKBr v1":
             version = "v15"
             path1 = path + "wkb_refraction (" + version + ")-" + tail
@@ -633,6 +642,11 @@ if __name__ == "__main__":
             ef_map(path1, path_out)
         elif version == "Map of EF for WKBr v3":
             version = "v16"
+            path1 = path + "wkb_refraction (" + version + ")-" + tail
+            path_out = path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-" + tail
+            ef_map(path1, path_out)
+        elif version == "Map of EF for WKBr v3-2":
+            version = "v16-2"
             path1 = path + "wkb_refraction (" + version + ")-" + tail
             path_out = path + "wkb_refraction (" + version + ")-" + section + "-" + my_region + "-" + tail
             ef_map(path1, path_out)

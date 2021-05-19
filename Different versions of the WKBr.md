@@ -29,6 +29,7 @@ convergence factor, sum. R0 - zero.
 +   **"wkb+refraction17-2"**: use the phase -pi/2.
 
 **"wkb+refraction18"**: (v.5)  
-R1 - one solution. R2 - rotation, convergence factor, sum. R0 - zero.
+R1 - one solution. R2 - rotation, convergence factor, sum. R0 -
+zero.
 +   **"wkb+refraction18-1"**: use the phase pi/2.
 +   **"wkb+refraction18-2"**: use the phase -pi/2.
