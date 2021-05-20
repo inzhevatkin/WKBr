@@ -7,7 +7,7 @@ import os
 size = 100
 grid = 160
 type = "bhfield"  # "bhfield"/"scattnlay"  # "WKB from ADDA" #  #  scattnlay "bhfield" #
-m = [1.3]  # 1.01, 1.05, 1.1, 1.2, 1.3
+m = [1.01]  # 1.01, 1.05, 1.1, 1.2, 1.3
 m_im = 0  # 0.01
 # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + ", section/"
 path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
@@ -16,7 +16,7 @@ path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", g
 if __name__ == "__main__":
     # v17", "v18", "v13-2", "17-2", "18-2"
     # "v12", "18-2", "17-2"
-    for version in ["wkb", "v1"]: # "wkb", "v1", "v2", "v5", "v12", "v7", "v13", "v13-2", "v15", "v16", "v17", "v18"
+    for version in ["v17"]: # "wkb", "v1", "v2", "v5", "v12", "v7", "v13", "v13-2", "v15", "v16", "v17", "v18"
         if version == "wkb":
             f0 = open(path + "dE-sc-wkb" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f0.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
@@ -103,6 +103,10 @@ if __name__ == "__main__":
                       "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         elif version == "simple_wkbr":
             f = open(path + "dE-sc-wkbr (simple_wkbr)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
+            f.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
+                      "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
+        elif version == "complex_wkbr":
+            f = open(path + "dE-sc-wkbr (complex_wkbr)" + str(size) + "-" + "all" + "-" + str(grid) + ".dat", 'w')
             f.write("m <dE_l2> <dE_one_root_l2> <dE_two_root_l2> <dE_no_root_l2> " +
                       "<dE_l1> <dE_one_root_l1> <dE_two_root_l1> <dE_no_root_l1> \n")
         for i in m:
@@ -504,6 +508,21 @@ if __name__ == "__main__":
                          str(aver_error_l1_one_root) + ' ' +
                          str(aver_error_l1_two_root) + ' ' +
                          str(aver_error_l1_no_root) + ' ' + '\n')
+            elif version == "complex_wkbr":
+                path_wkb_refraction = path + "wkb_refraction (complex_wkbr)-" + tail
+                find_wkb_ef(x, y, z, i, m_im, size / 2, 1, path_wkb_refraction, grid, type="complex_wkbr")
+                aver_error_l2, aver_error_l2_one_root, aver_error_l2_two_root, aver_error_l2_no_root, \
+                aver_error_l1, aver_error_l1_one_root, aver_error_l1_two_root, aver_error_l1_no_root = \
+                    compare(pathsc_adda, path_wkb_refraction, i, lines, size / 2)
+                f.write(str(i) + ' ' +
+                         str(aver_error_l2) + ' ' +
+                         str(aver_error_l2_one_root) + ' ' +
+                         str(aver_error_l2_two_root) + ' ' +
+                         str(aver_error_l2_no_root) + ' ' +
+                         str(aver_error_l1) + ' ' +
+                         str(aver_error_l1_one_root) + ' ' +
+                         str(aver_error_l1_two_root) + ' ' +
+                         str(aver_error_l1_no_root) + ' ' + '\n')
 
         if version == "wkb":
             f0.close()
@@ -548,6 +567,8 @@ if __name__ == "__main__":
         elif version == "v18-2":
             f18_2.close()
         elif version == "simple_wkbr":
+            f.close()
+        elif version == "complex_wkbr":
             f.close()
 
 
