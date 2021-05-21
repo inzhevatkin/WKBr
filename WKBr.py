@@ -110,6 +110,9 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 i += 1
 
         # Normalize coordinates to get dimensionless:
+        x_cur_old = x_cur
+        y_cur_old = y_cur
+        z_cur_old = z_cur
         x_cur /= radius
         y_cur /= radius
         z_cur /= radius
@@ -623,10 +626,14 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
         else:
             print("Error in find_wkb_ef() function!")
         # Write electric field
-        f.write(str(x_cur * radius) + ' ' + str(y_cur * radius) + ' ' + str(z_cur * radius) + ' ' + str(e) + ' '
+        f.write(str(x_cur_old) + ' ' + str(y_cur_old) + ' ' + str(z_cur_old) + ' ' + str(e) + ' '
                 + str(exr_new) + ' ' + str(exi_new) + ' '
                 + str(eyr_new) + ' ' + str(eyi_new) + ' '
                 + str(ezr_new) + ' ' + str(ezi_new) + '\n')
+        # you need to return the values, otherwise an error occurs when generating the grid:
+        x_cur = x_cur_old
+        y_cur = y_cur_old
+        z_cur = z_cur_old
     f.close()
 
     print("Number of dots in one root region = ", num_one_root)
