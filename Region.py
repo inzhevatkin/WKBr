@@ -52,12 +52,6 @@ def region(y2, z2, m, lines):
                     return "no_root"
                 elif y2_l2 - delta <= y2 <= y2_l2 + delta:
                     return region2(y2, z2, m)
-                '''
-                if y2 <= y2_l2:
-                    return "two_roots"
-                elif y2 > y2_l2:
-                    return "no_root"
-                '''
             else:
                 return "one_root"
         else:
@@ -78,22 +72,20 @@ def in_square(y, z, R):
 # Returns: "one_root", "two_roots", "no_root", "error".
 def region2(y2, z2, m):
     if in_sphere(y2, z2):
-        if z2 >= 0:
+        if z2 > 0:
             root_flag, y1, z1 = func(y2, z2, m, y2)
             if root_flag:
-                if z2 == 0:
-                    # small shift from the edge of the sphere:
-                    shift = 1e-10
-                    root_flag2, y1_2, z1_2 = func2(y2, z2, m, 1 - shift)
+                # f(1) > g(1)
+                f_1 = (1 - y2) / z2
+                g_1 = (m ** 2 - 1) ** 0.5
+                if f_1 > g_1:
+                    return "one_root"
                 else:
                     root_flag2, y1_2, z1_2 = func2(y2, z2, m, 1)
-                if root_flag2:
-                    if isclose(y1, y1_2, abs_tol=tolerance * 10) and isclose(z1, z1_2, abs_tol=tolerance * 10):
-                        return "one_root"
-                    else:
+                    if root_flag2:
                         return "two_roots"
-                else:
-                    return "one_root"
+                    else:
+                        return "one_root"
             else:
                 return "no_root"
         else:
