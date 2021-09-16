@@ -7,76 +7,7 @@ from math import isnan
 from Region import region, BoundaryLines
 from Coordinate_systems import coordinates_in_meridional_plane
 import os
-from Compare2 import scattnlay_bhfield_to_adda
-
-
-# path1 - путь до массива данных
-# path2 - путь до места сохранения данных
-# section - тип сечения которое фиксируется (x-section, y-section)
-# coordinate - координата выбранного сечения
-def prepare_data(path1, path2, type, section, coordinate):
-    print("prepare_data ", path1, ' ', path2)
-    f1 = open(path2, 'w')
-    if type == "scattnlay":
-        data = np.loadtxt(path1, dtype=np.float32, delimiter=", ", skiprows=1, usecols=range(9))
-        x = data[:, 0]
-        y = data[:, 1]
-        z = data[:, 2]
-        Exr = data[:, 3]
-        Exi = data[:, 4]
-        Eyr = data[:, 5]
-        Eyi = data[:, 6]
-        Ezr = data[:, 7]
-        Ezi = data[:, 8]
-        f1.write("x y z Ex.r Ex.i Ey.r Ey.i Ez.r Ez.i \n")
-    elif type == "bhfield" or type == "adda":
-        data = np.loadtxt(path1, dtype=np.float32, delimiter=" ", skiprows=1, usecols=range(10))
-        x = data[:, 0]
-        y = data[:, 1]
-        z = data[:, 2]
-        E = data[:, 3]
-        Exr = data[:, 4]
-        Exi = data[:, 5]
-        Eyr = data[:, 6]
-        Eyi = data[:, 7]
-        Ezr = data[:, 8]
-        Ezi = data[:, 9]
-        f1.write("x y z |E|^2 Ex.r Ex.i Ey.r Ey.i Ez.r Ez.i \n")
-    else:
-        print("Error in prepare_data function! Not defined type.")
-    L = len(x)
-
-    if section == "y-section":
-        for i in range(L):
-            y_tmp = y[i]
-            if isclose(y_tmp, coordinate, abs_tol=1e-2):
-                if type == "scattnlay":
-                    line = str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + \
-                           str(Exr[i]) + ' ' + str(Exi[i]) + ' ' + \
-                           str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' + \
-                           str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n'
-                elif type == "bhfield" or type == "adda":
-                    line = str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + str(E[i]) + ' ' + \
-                           str(Exr[i]) + ' ' + str(Exi[i]) + ' ' + \
-                           str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' + \
-                           str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n'
-                f1.write(line)
-    elif section == "x-section":
-        for i in range(L):
-            if isclose(x[i], coordinate, abs_tol=1e-2):
-                if type == "scattnlay":
-                    line = str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + \
-                           str(Exr[i]) + ' ' + str(Exi[i]) + ' ' + \
-                           str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' + \
-                           str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n'
-                elif type == "bhfield" or type == "adda":
-                    line = str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + str(E[i]) + ' ' + \
-                           str(Exr[i]) + ' ' + str(Exi[i]) + ' ' + \
-                           str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' + \
-                           str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n'
-                f1.write(line)
-
-    f1.close()
+from Compare2 import scattnlay_bhfield_to_adda, prepare_data
 
 
 def find_difference(path1, path2, path3, type):
@@ -441,18 +372,18 @@ def ef_map(path1, path_out):
 
 
 if __name__ == "__main__":
-    size = 1000  # 500
-    grid = 1000  # 100
+    size = 100  # 500
+    grid = 200  # 100
     R = size / 2
     m = 1.1
     m_im = 0  # 0.01
-    type = "scattnlay"  # "scattnlay"/"bhfield"
+    type = "bhfield"  # "scattnlay"/"bhfield"
     section = "y-section"
     section_coordinate = 0  # 2.5252  # 0.3125
     use_my_range = False
     min = -0.5
     max = 0.5
-    use_small_region_flag = True
+    use_small_region_flag = False
     my_region = "no_root"
     # tail = str(size) + "-" + str(m) + "-" + str(m_im) + "-" + str(grid) + ".dat"
     tail = str(size) + "-" + str(m) + "-" + str(grid) + ".dat"
@@ -460,7 +391,10 @@ if __name__ == "__main__":
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + " (clear)/"
     # path = "C:/Users/konstantin/Documents/main-script/data size " + str(size) + ", grid " + str(grid) + "/"
     lines = BoundaryLines(m)
-    for version in ["Map of exact"]:
+    for version in ["Maps of error for WKBr v1",
+                    "Maps of error for WKBr v2",
+                    "Maps of error for WKBr v5",
+                    "Maps of error for WKBr v12"]:
         print(version)
         if version == "WKB":
             # Найдём сечение x-section WKB:

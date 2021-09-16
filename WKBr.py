@@ -43,9 +43,13 @@ def find_convergence_factor(radius, m, l, inc_angle, refracted_angle):
     ro1 = safe_div(2, den1)
     ro2 = safe_div(2, den2)
     K = safe_div(ro1 * ro2, (ro1 + l) * (ro2 + l))
+    if K < 0:
+        negative_sign = True
+    else:
+        negative_sign = False
     K = abs(K)
     K = K ** 0.5
-    return K
+    return K, negative_sign
 
 
 # Function for applying the convergence factor.
@@ -425,7 +429,7 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 if type == "wkb+refraction17" or type == "wkb+refraction17-1" or type == "wkb+refraction17-2":
                     ref_ang = acos(cos_t2)
                     inc_ang = asin(m * sin(ref_ang))
-                    K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
+                    K = find_convergence_factor(radius, m, radius * l2_2, inc_ang, ref_ang)
                     exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
                         apply_convergence_factor(exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2, K)
 
@@ -578,7 +582,9 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                     apply_rotation_electric_field_vector(exr_new, exi_new, da1)
                 ref_ang = acos(cos_t1)
                 inc_ang = asin(m * sin(ref_ang))
-                K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
+                K, negative_sign = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
+                if negative_sign:
+                    print("Negative sign in one-solution region!")
                 exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = \
                     apply_convergence_factor(exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new, K)
                 e = (exr_new ** 2 + exi_new ** 2 + eyr_new ** 2 + eyi_new ** 2 + ezr_new ** 2 + ezi_new ** 2) ** 0.5
@@ -588,33 +594,40 @@ def find_wkb_ef(x_arr, y_arr, z_arr, m, mi, radius, k, path, grid, type="analyti
                 attenuation2 = find_attenuation(k, l2_2, K2, cos_t2, radius)
                 arg1 = find_arg(k, radius, N1, l1, l2)
                 arg2 = find_arg(k, radius, N2, l1_2, l2_2)
-                arg2 -= pi / 2
+
+                ref_ang1 = acos(cos_t1)
+                inc_ang1 = asin(m * sin(ref_ang1))
+                K1, negative_sign1 = find_convergence_factor(radius, m, radius * l2, inc_ang1, ref_ang1)
+                if negative_sign1:
+                    print("Negative sign in double-solution region (first ray)!")
+
+                ref_ang2 = acos(cos_t2)
+                inc_ang2 = asin(m * sin(ref_ang2))
+                K2, negative_sign2 = find_convergence_factor(radius, m, radius * l2_2, inc_ang2, ref_ang2)
+                if negative_sign2:
+                    arg2 -= pi / 2
 
                 exr_new1 = cos(arg1) * attenuation1
                 exr_new2 = cos(arg2) * attenuation2
                 exi_new1 = sin(arg1) * attenuation1
                 exi_new2 = sin(arg2) * attenuation2
-
+                # -----------------------------------------------------------#
+                # First ray
                 exr_new1, exi_new1, eyr_new1, eyi_new1 = \
                     apply_transmission_coefficient(exr_new1, exi_new1, t_per1, t_par1, rotation_angle)
                 exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
                     apply_rotation_electric_field_vector(exr_new1, exi_new1, da1)
-                ref_ang = acos(cos_t1)
-                inc_ang = asin(m * sin(ref_ang))
-                K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
                 exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1 = \
-                    apply_convergence_factor(exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1, K)
-
+                    apply_convergence_factor(exr_new1, exi_new1, eyr_new1, eyi_new1, ezr_new1, ezi_new1, K1)
+                # -----------------------------------------------------------#
+                # Second ray
                 exr_new2, exi_new2, eyr_new2, eyi_new2 = \
                     apply_transmission_coefficient(exr_new2, exi_new2, t_per2, t_par2, rotation_angle)
                 exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
                     apply_rotation_electric_field_vector(exr_new2, exi_new2, da2)
-                ref_ang = acos(cos_t2)
-                inc_ang = asin(m * sin(ref_ang))
-                K = find_convergence_factor(radius, m, radius * l2, inc_ang, ref_ang)
                 exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2 = \
-                    apply_convergence_factor(exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2, K)
-
+                    apply_convergence_factor(exr_new2, exi_new2, eyr_new2, eyi_new2, ezr_new2, ezi_new2, K2)
+                # -----------------------------------------------------------#
                 exr_new, exi_new, eyr_new, eyi_new, ezr_new, ezi_new = sum_ef(exr_new1, exr_new2, exi_new1, exi_new2,
                                                                               eyr_new1, eyr_new2, eyi_new1, eyi_new2,
                                                                               ezr_new1, ezr_new2, ezi_new1, ezi_new2)

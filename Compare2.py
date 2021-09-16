@@ -564,6 +564,7 @@ def prepare_bhfield_scattnlay(path1, path2, type, size):
 
     return count
 
+
 def return_coordinates(path1, type="bhfield"):
     print("Return coordinates, type -", type)
     f1 = open(path1, 'r')
@@ -903,6 +904,80 @@ def point_field(path1, f2, xp, yp, zp, my_abs_tol, m):
              + str(ezr_av) + ' ' + str(ezi_av) + ' '
              + str(count) + '\n')
     f.close()
+
+
+# path1 - путь до массива данных
+# path2 - путь до места сохранения данных
+# section - тип сечения которое фиксируется (x-section, y-section)
+# coordinate - координата выбранного сечения
+def prepare_data(path1, path2, type, section, coordinate, R_determine=False, R=0):
+    print("prepare_data ", path1, ' ', path2)
+    f1 = open(path2, 'w')
+    if type == "scattnlay":
+        data = np.loadtxt(path1, dtype=np.float32, delimiter=", ", skiprows=1, usecols=range(9))
+        x = data[:, 0]
+        y = data[:, 1]
+        z = data[:, 2]
+        Exr = data[:, 3]
+        Exi = data[:, 4]
+        Eyr = data[:, 5]
+        Eyi = data[:, 6]
+        Ezr = data[:, 7]
+        Ezi = data[:, 8]
+        f1.write("x y z Ex.r Ex.i Ey.r Ey.i Ez.r Ez.i \n")
+    elif type == "bhfield" or type == "adda":
+        data = np.loadtxt(path1, dtype=np.float32, delimiter=" ", skiprows=1, usecols=range(10))
+        x = data[:, 0]
+        y = data[:, 1]
+        z = data[:, 2]
+        E = data[:, 3]
+        Exr = data[:, 4]
+        Exi = data[:, 5]
+        Eyr = data[:, 6]
+        Eyi = data[:, 7]
+        Ezr = data[:, 8]
+        Ezi = data[:, 9]
+        f1.write("x y z |E|^2 Ex.r Ex.i Ey.r Ey.i Ez.r Ez.i \n")
+    else:
+        print("Error in prepare_data function! Not defined type.")
+    L = len(x)
+
+    if section == "y-section":
+        for i in range(L):
+            y_tmp = y[i]
+            if isclose(y_tmp, coordinate, abs_tol=1e-2):
+                if type == "scattnlay":
+                    line = str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + \
+                           str(Exr[i]) + ' ' + str(Exi[i]) + ' ' + \
+                           str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' + \
+                           str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n'
+                elif type == "bhfield" or type == "adda":
+                    line = str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + str(E[i]) + ' ' + \
+                           str(Exr[i]) + ' ' + str(Exi[i]) + ' ' + \
+                           str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' + \
+                           str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n'
+                f1.write(line)
+    elif section == "x-section":
+        for i in range(L):
+            if isclose(x[i], coordinate, abs_tol=1e-2):
+                if type == "scattnlay":
+                    x1 = float(x[i])
+                    y1 = float(y[i])
+                    z1 = float(z[i])
+                    R1 = (x1 ** 2 + y1 ** 2 + z1 ** 2) ** 0.5
+                    if R1 < R:
+                        line = str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + \
+                               str(Exr[i]) + ' ' + str(Exi[i]) + ' ' + \
+                               str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' + \
+                               str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n'
+                        f1.write(line)
+                elif type == "bhfield" or type == "adda":
+                    line = str(x[i]) + ' ' + str(y[i]) + ' ' + str(z[i]) + ' ' + str(E[i]) + ' ' + \
+                           str(Exr[i]) + ' ' + str(Exi[i]) + ' ' + \
+                           str(Eyr[i]) + ' ' + str(Eyi[i]) + ' ' + \
+                           str(Ezr[i]) + ' ' + str(Ezi[i]) + '\n'
+                    f1.write(line)
+    f1.close()
 
 
 
