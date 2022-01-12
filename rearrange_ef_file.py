@@ -1,8 +1,9 @@
 from math import isnan
 
-# Функция для перестановки компонент электрического поля.
+
+# Function for permutation of electric field components.
 # Тип: ADDA.
-# EX и EY меняет местами.
+# EX and EY are swapped.
 def rearrange_ef(open_path, save_path):
     print("rearrange function is working")
     f1 = open(open_path, 'r')
@@ -10,7 +11,7 @@ def rearrange_ef(open_path, save_path):
     f2.write(f1.readline())
     while True:
         numbers = f1.readline()
-        if len(numbers) == 0:  # Нулевая длина обозначает конец файла (EOF)
+        if len(numbers) == 0:  # EOF
             break
         numbers = numbers.split()
         x = float(numbers[0])
@@ -19,18 +20,13 @@ def rearrange_ef(open_path, save_path):
         e = float(numbers[3])
         exr = float(numbers[4])
         exi = float(numbers[5])
-        eyr = float(numbers[6])
-        eyi = float(numbers[7])
-        ezr = float(numbers[8])
-        ezi = float(numbers[9])
         s = str(x)+' '+str(y)+' '+str(z)+' '+str(e)+' 0 0 '+str(exr)+' '+str(exi)+' 0 0 \n'
-        # print("z = ", z)
         f2.write(s)
     f1.close()
     f2.close()
 
 
-# Функция корректирует файл f и сохраняет в f2.
+# The function corrects file f and saves to f2.
 def correct_scattnlay_file(path, path2):
     f = open(path)
     f2 = open(path2, 'w')

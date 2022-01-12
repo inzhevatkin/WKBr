@@ -15,7 +15,6 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
     y2, z2 = coordinates_in_meridional_plane(x2_lab, y2_lab, z2_lab)
     # Find rotation angle:
     rotation_angle = find_rotation_angle_in_mp(x2_lab, y2_lab)
-
     # For WKBr:
     if type_ != "analytic" and type_ != "discrete":
         try:
@@ -58,7 +57,8 @@ def optical_len(x2_lab, y2_lab, z2_lab, z_, m, mi, type_, lines, k, solution="it
                         or type_ == "complex_wkbr":
                     # The 1-st option: R1 - use one solution. R2 - sum. R0 - use zero solution.
                     # The 3-rd option: R1 - one solution. R2 - rotation, transmission coefficients, sum. R0 - zero.
-                    # The 4-rd option: R1 - one solution. R2 - rotation, transmission coefficients, convergence factor, sum. R0 - zero.
+                    # The 4-rd option: R1 - one solution.
+                    # R2 - rotation, transmission coefficients, convergence factor, sum. R0 - zero.
                     cur_region = region(y2, z2, m, lines)
                     if cur_region == "one_root" or cur_region == "two_roots":
                         info, y1, z1, y1_2, z1_2 = iterative_method(y2, z2, m, cur_region)

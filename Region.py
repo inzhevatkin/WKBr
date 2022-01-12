@@ -1,5 +1,5 @@
-from iterative_method import func, func2, tolerance
-from math import sin, cos, asin, tan, isclose
+from math import cos, asin, tan
+from iterative_method import func, func2
 
 
 # This class stores the coefficients of the lines that bound regions with one solution, with two and without solutions.
